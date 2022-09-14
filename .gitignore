@@ -1,0 +1,8 @@
+node_modules/
+yarn.lock
+node_modules
+.env
+.envDev
+.envReal
+.vscode
+logs/*
