@@ -54,15 +54,8 @@ class UserCommand extends WynnCommand {
 		let userInfo = await this.container.client.db.fetchUser(message.author.id);
 		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
-		if (isNaN(betMoney)) {
-			await this.container.client.resetCustomCooldown(message.author.id, this.name);
-			return send(
-				message,
-				t('commands/baucua:inputerror', {
-					user: message.author.tag,
-					prefix: await this.container.client.fetchPrefix(message)
-				})
-			);
+		if (isNaN(betMoney) || input === null) {
+			return await this.randomBauCua(message);
 		}
 		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
 	}
@@ -312,6 +305,27 @@ class UserCommand extends WynnCommand {
 		}
 	}
 
+	async randomBauCua(message) {
+		let randDices = [];
+		while (randDices.length < 3) {
+			randDices.push(Math.floor(Math.random() * 6));
+		}
+		return send(
+			message,
+			convertEmoji(randDices[0], dices) +
+				' ' +
+				convertEmoji(randDices[1], dices) +
+				' ' +
+				convertEmoji(randDices[2], dices) +
+				'\n' +
+				convertName(randDices[0]) +
+				' ✧ ' +
+				convertName(randDices[1]) +
+				' ✧ ' +
+				convertName(randDices[2])
+		);
+	}
+
 	async saveBetResult(userId, money) {
 		return await this.container.client.db.updateUser(userId, {
 			$inc: {
@@ -374,6 +388,23 @@ function convertEmoji(x, dices) {
 	if (x == 3) return dices.ga;
 	if (x == 4) return dices.tom;
 	if (x == 5) return dices.nai;
+}
+
+function convertName(x) {
+	switch (x) {
+		case 0:
+			return 'Bầu';
+		case 1:
+			return 'Cua';
+		case 2:
+			return 'Cá';
+		case 3:
+			return 'Gà';
+		case 4:
+			return 'Tôm';
+		case 5:
+			return 'Nai';
+	}
 }
 
 module.exports = {
