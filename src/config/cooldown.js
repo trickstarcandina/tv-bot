@@ -12,7 +12,8 @@ module.exports = {
 		cf: 15000,
 		drop: 15000,
 		pick: 15000,
-		slot: 15000
+		slot: 15000,
+		random: 10000
 	},
 	general: {
 		give_money: 10000,
