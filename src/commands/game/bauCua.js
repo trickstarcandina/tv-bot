@@ -4,6 +4,7 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
+const wait = require('node:timers/promises').setTimeout;
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
@@ -310,10 +311,17 @@ class UserCommand extends WynnCommand {
 		while (randDices.length < 3) {
 			randDices.push(Math.floor(Math.random() * 6));
 		}
-		return await Promise.all([
-			send(message, convertEmoji(randDices[0], dices) + ' ' + convertEmoji(randDices[1], dices) + ' ' + convertEmoji(randDices[2], dices)),
-			send(message, '**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**')
+		let result1 = convertEmoji(randDices[0], dices);
+		let result2 = convertEmoji(randDices[1], dices);
+		let result3 = convertEmoji(randDices[2], dices);
+		let lastResult = await send(message, result1);
+		await Promise.all([
+			wait(1111),
+			lastResult.edit(result1 + ' ' + result2),
+			wait(1111),
+			lastResult.edit(result1 + ' ' + result2 + ' ' + result3)
 		]);
+		return message.channel.send('**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**');
 	}
 
 	async saveBetResult(userId, money) {
