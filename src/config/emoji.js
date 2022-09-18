@@ -1,15 +1,15 @@
 module.exports = {
 	common: {
-		money: '<:emoji_4:962628333156327425>',
+		money: '💵',
 		tick_x: '❌',
 		tick: '✅',
 		blank: '<:blank:1021004572082315355>'
 	},
 	game: {
 		cf: {
-			spin: '✅',
-			win: '✅',
-			lose: '✅'
+			spin: '<:load:1021069303266680903>',
+			win: '<:tvcoin:1021068771617685695>',
+			lose: '<:tvtien:1021068769835106374>'
 		},
 		baucua: {
 			bau: '<:gh_bau:1019933348807852112>',

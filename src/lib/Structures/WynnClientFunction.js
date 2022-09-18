@@ -57,7 +57,7 @@ module.exports.checkTimeCoolDownWithCheckSpam = async function checkTimeCoolDown
 	container.client.options.spamTime.set(`${id}_${name}`, spamTime + '_' + dateNow.toString());
 	//spams
 	let countSpam = container.client.options.spams.get(`${id}`) || 0;
-	if (countSpam > 22) {
+	if (countSpam > 50) {
 		//sent captcha
 		return await createCaptcha(true);
 	} else {
