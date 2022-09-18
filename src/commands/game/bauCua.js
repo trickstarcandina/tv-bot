@@ -310,20 +310,10 @@ class UserCommand extends WynnCommand {
 		while (randDices.length < 3) {
 			randDices.push(Math.floor(Math.random() * 6));
 		}
-		return send(
-			message,
-			convertEmoji(randDices[0], dices) +
-				' ' +
-				convertEmoji(randDices[1], dices) +
-				' ' +
-				convertEmoji(randDices[2], dices) +
-				'\n' +
-				convertName(randDices[0]) +
-				' ✧ ' +
-				convertName(randDices[1]) +
-				' ✧ ' +
-				convertName(randDices[2])
-		);
+		return await Promise.all([
+			send(message, convertEmoji(randDices[0], dices) + ' ' + convertEmoji(randDices[1], dices) + ' ' + convertEmoji(randDices[2], dices)),
+			send(message, '**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**')
+		]);
 	}
 
 	async saveBetResult(userId, money) {
