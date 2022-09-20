@@ -20,6 +20,7 @@ const dices = {
 	nai: emoji.game.baucua.nai
 };
 const dice_icon = emoji.game.baucua.dice;
+const loadEmoji = emoji.game.baucua.load;
 const cancel = emoji.common.tick_x;
 const blank = emoji.common.blank;
 const maxBet = game.baucua.max;
@@ -314,14 +315,16 @@ class UserCommand extends WynnCommand {
 		let result1 = convertEmoji(randDices[0], dices);
 		let result2 = convertEmoji(randDices[1], dices);
 		let result3 = convertEmoji(randDices[2], dices);
-		let lastResult = await send(message, result1);
-		await Promise.all([
-			wait(1111),
-			lastResult.edit(result1 + ' ' + result2),
-			wait(1111),
-			lastResult.edit(result1 + ' ' + result2 + ' ' + result3)
+		let lastResult = await send(message, loadEmoji + ' ' + loadEmoji + ' ' + loadEmoji);
+		await wait(3333);
+		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + loadEmoji);
+		await wait(4444);
+		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + result3);
+		await wait(5555);
+		return await Promise.all([
+			lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
+			message.channel.send('**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**')
 		]);
-		return message.channel.send('**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**');
 	}
 
 	async saveBetResult(userId, money) {
