@@ -57,3 +57,9 @@ const { getCaptchaByDiscordId, updateCaptcha, checkIsBlock } = require('./query/
 module.exports.getCaptchaByDiscordId = getCaptchaByDiscordId;
 module.exports.updateCaptcha = updateCaptcha;
 module.exports.checkIsBlock = checkIsBlock;
+/* Giveaways */
+const { getAllGiveaways, saveGiveaway, editGiveaway, deleteGiveaway } = require('./query/giveaways');
+module.exports.getAllGiveaways = getAllGiveaways;
+module.exports.saveGiveaway = saveGiveaway;
+module.exports.editGiveaway = editGiveaway;
+module.exports.deleteGiveaway = deleteGiveaway;
