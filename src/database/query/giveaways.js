@@ -1,7 +1,7 @@
 const giveawaySchema = require('../schema/giveaways');
 const giveawayModel = mongoose.model('giveaways', giveawaySchema);
 
-const { GiveawaysManager } = require('discord-giveaways');
+const { GiveawaysManager } = require('discord-giveaways-v13');
 const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
     async getAllGiveaways() {
         return await giveawayModel.find().lean().exec();
