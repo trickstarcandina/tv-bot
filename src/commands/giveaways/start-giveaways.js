@@ -45,7 +45,7 @@ class UserCommand extends WynnCommand {
             messages
         });
     
-        message.reply(`Giveaway started in ${giveawayChannel}!`);
+        return await utils.returnContentForSlashOrSendMessage(message, t('commands/startgiveaways:start', { channel: giveawayChannel }));
     
     } 
 
