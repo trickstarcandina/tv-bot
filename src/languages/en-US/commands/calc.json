@@ -1,0 +1,6 @@
+{
+	"description": "Calculator command",
+	"usage": "{{prefix}}calc",
+	"error": "Something went wrong while trying to calculator. Try again later...",
+	"endseasion": "*This session has timed out. You can start a new one with {{prefix}}calc.*"
+}
