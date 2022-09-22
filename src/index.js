@@ -7,6 +7,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('node:fs');
 let cronJob = require('./shedules/index');
+const GiveawayManagerWithOwnDatabase = require('./database/mongodb');
 
 //get ip
 var http = require('http');

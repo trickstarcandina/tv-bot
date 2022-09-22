@@ -58,7 +58,8 @@ module.exports.getCaptchaByDiscordId = getCaptchaByDiscordId;
 module.exports.updateCaptcha = updateCaptcha;
 module.exports.checkIsBlock = checkIsBlock;
 /* Giveaways */
-const { getAllGiveaways, saveGiveaway, editGiveaway, deleteGiveaway } = require('./query/giveaways');
+const { GiveawayManagerWithOwnDatabase, getAllGiveaways, saveGiveaway, editGiveaway, deleteGiveaway } = require('./query/giveaways');
+module.exports.GiveawayManagerWithOwnDatabase = GiveawayManagerWithOwnDatabase;
 module.exports.getAllGiveaways = getAllGiveaways;
 module.exports.saveGiveaway = saveGiveaway;
 module.exports.editGiveaway = editGiveaway;
