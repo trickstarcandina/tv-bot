@@ -2,5 +2,5 @@
 	"description": "Tính tiềnnnnn",
 	"usage": "{{prefix}}calc",
     "error": "Đã có lỗi xảy ra với phép tính. Vui lòng thử lại...",
-	"endseasion": "*Đã quá thời gian sử dụng. Bạn nên xài lại lệnh {{prefix}}calc.*"
+	"endseasion": "*Đã quá thời gian sử dụng ~Vui lòng nạp thêm tiền~. Bạn nên xài lại lệnh {{prefix}}calc.*"
 }
