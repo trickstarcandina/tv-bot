@@ -74,6 +74,17 @@ const main = async () => {
 		client.logger.info('Logging in');
 		await client.login(process.env.TOKEN);
 		client.logger.info('logged in');
+		//load giveaways
+		//const { GiveawaysManager } = require('discord-giveaways-v13');
+		const manager = new GiveawayManagerWithOwnDatabase(client, {
+			default: {
+				botsCanWin: false,
+				embedColor: '#FF0000',
+				embedColorEnd: '#000000',
+				reaction: '🎉'
+			}
+		});
+		client.giveawaysManager = manager;
 		//register slash
 		console.log('Started refreshing application (/) commands.');
 		await rest.put(Routes.applicationCommands(process.env.APP_ID), {
