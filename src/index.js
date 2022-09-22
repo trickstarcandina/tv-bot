@@ -83,7 +83,7 @@ const main = async () => {
 				embedColorEnd: '#000000',
 				reaction: '🎉'
 			}
-		});
+		}); //a Trickstar làm tiếp hộ em nha, em đi ngủ 
 		client.giveawaysManager = manager;
 		//register slash
 		console.log('Started refreshing application (/) commands.');
