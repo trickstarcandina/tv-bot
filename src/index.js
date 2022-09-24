@@ -7,6 +7,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('node:fs');
 let cronJob = require('./shedules/index');
+const GiveawayManagerWithOwnDatabase = require('./database/mongodb');
 
 //get ip
 var http = require('http');
@@ -73,6 +74,17 @@ const main = async () => {
 		client.logger.info('Logging in');
 		await client.login(process.env.TOKEN);
 		client.logger.info('logged in');
+		//load giveaways
+		//const { GiveawaysManager } = require('discord-giveaways-v13');
+		const manager = new GiveawayManagerWithOwnDatabase(client, {
+			default: {
+				botsCanWin: false,
+				embedColor: '#FF0000',
+				embedColorEnd: '#000000',
+				reaction: '🎉'
+			}
+		}); //a Trickstar làm tiếp hộ em nha, em đi ngủ 
+		client.giveawaysManager = manager;
 		//register slash
 		console.log('Started refreshing application (/) commands.');
 		await rest.put(Routes.applicationCommands(process.env.APP_ID), {
