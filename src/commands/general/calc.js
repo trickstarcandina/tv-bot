@@ -41,6 +41,7 @@ class UserCommand extends WynnCommand {
 						data = res + '';
 					} catch (e) {
 						console.error(e);
+						// use t // const t = await fetchT(message);
 						content = 'commands/calc:error';
 						data = '';
 					}
@@ -56,19 +57,26 @@ class UserCommand extends WynnCommand {
 		});
 		collector.on('end', async (collected) => {
 			await newMsg.edit({
+				// use t // const t = await fetchT(message);
 				content: content + 'commands/calc:endseasion'
 			});
 		});
+	}
+
+	async mainprocess() {
+		// viết hàm xử lý logic của cả messageRun và execute ở đây nhé
 	}
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 		return await interaction.reply('none');
+		// return mainprocess()
 	}
 }
 
 module.exports = {
+	// viết thêm tham số nếu cần
 	data: new SlashCommandBuilder().setName('calc').setDescription('Calculator 📱'),
 	UserCommand
 };
