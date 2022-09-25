@@ -13,7 +13,7 @@ class UserCommand extends WynnCommand {
             cooldownDelay: 5000
         });
     }
-    async messageRun(message) {
+    async execute(bot, message) {
         let data = '';
         let content = '';
 
