@@ -5,4 +5,5 @@ node_modules
 .envDev
 .envReal
 .vscode
+.history
 logs/*
