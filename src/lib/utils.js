@@ -1,7 +1,6 @@
 const { send } = require('@sapphire/plugin-editable-commands');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { RandomLoadingMessage } = require('./constants');
-const { MessageActionRow, MessageButton } = require('discord.js');
 
 function pickRandom(array) {
 	return array[Math.floor(Math.random() * array.length)];
