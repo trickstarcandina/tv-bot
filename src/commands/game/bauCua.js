@@ -316,11 +316,11 @@ class UserCommand extends WynnCommand {
 		let result2 = convertEmoji(randDices[1], dices);
 		let result3 = convertEmoji(randDices[2], dices);
 		let lastResult = await send(message, loadEmoji + ' ' + loadEmoji + ' ' + loadEmoji);
-		await wait(3333);
+		await wait(1111);
 		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + loadEmoji);
-		await wait(4444);
+		await wait(2222);
 		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + result3);
-		await wait(5555);
+		await wait(3333);
 		return await Promise.all([
 			lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
 			message.channel.send('**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**')
