@@ -101,34 +101,34 @@ function getKeyByValueMap(map, searchValue) {
 
 function generateComponents() {
 	const row1 = new MessageActionRow().addComponents(
-		new MessageButton().setCustomID('clear').setLabel('C').setStyle('DANGER'),
-		new MessageButton().setCustomID('(').setLabel('(').setStyle('PRIMARY'),
-		new MessageButton().setCustomID(')').setLabel(')').setStyle('PRIMARY'),
-		new MessageButton().setCustomID('^').setLabel('^').setStyle('PRIMARY')
+		new MessageButton().setCustomId('clear').setLabel('C').setStyle('DANGER'),
+		new MessageButton().setCustomId('(').setLabel('(').setStyle('PRIMARY'),
+		new MessageButton().setCustomId(')').setLabel(')').setStyle('PRIMARY'),
+		new MessageButton().setCustomId('^').setLabel('^').setStyle('PRIMARY')
 	);
 	const row2 = new MessageActionRow().addComponents(
-		new MessageButton().setCustomID('7').setLabel('7').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('8').setLabel('8').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('9').setLabel('9').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('/').setLabel('/').setStyle('PRIMARY')
+		new MessageButton().setCustomId('7').setLabel('7').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('8').setLabel('8').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('9').setLabel('9').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('/').setLabel('/').setStyle('PRIMARY')
 	);
 	const row3 = new MessageActionRow().addComponents(
-		new MessageButton().setCustomID('4').setLabel('4').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('5').setLabel('5').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('6').setLabel('6').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('*').setLabel('*').setStyle('PRIMARY')
+		new MessageButton().setCustomId('4').setLabel('4').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('5').setLabel('5').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('6').setLabel('6').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('*').setLabel('*').setStyle('PRIMARY')
 	);
 	const row4 = new MessageActionRow().addComponents(
-		new MessageButton().setCustomID('1').setLabel('1').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('2').setLabel('2').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('3').setLabel('3').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('-').setLabel('-').setStyle('PRIMARY')
+		new MessageButton().setCustomId('1').setLabel('1').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('2').setLabel('2').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('3').setLabel('3').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('-').setLabel('-').setStyle('PRIMARY')
 	);
 	const row5 = new MessageActionRow().addComponents(
-		new MessageButton().setCustomID('0').setLabel('0').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('.').setLabel('.').setStyle('SECONDARY'),
-		new MessageButton().setCustomID('=').setLabel('=').setStyle('SUCCESS'),
-		new MessageButton().setCustomID('+').setLabel('+').setStyle('PRIMARY')
+		new MessageButton().setCustomId('0').setLabel('0').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('.').setLabel('.').setStyle('SECONDARY'),
+		new MessageButton().setCustomId('=').setLabel('=').setStyle('SUCCESS'),
+		new MessageButton().setCustomId('+').setLabel('+').setStyle('PRIMARY')
 	);
 	return [row1, row2, row3, row4, row5];
 }
