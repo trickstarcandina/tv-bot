@@ -4,7 +4,6 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
-const emoji = require('../../config/emoji');
 const coolDown = require('../../config/cooldown');
 const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 
@@ -35,27 +34,27 @@ class UserCommand extends WynnCommand {
 		if (argsLength < 3) {
 			switch (argsLength) {
 				case 0:
-					return this.randomNumber(0, 100, message.author.tag, message);
+					return this.randomNumber(0, 100, t, message.author.tag, message);
 				case 1:
 					let max = await args.next();
 					if (isNaN(max)) {
 						await this.container.client.resetCustomCooldown(message.author.id, this.name);
 						return send(
 							message,
-							t('commands/pick:inputerror', {
+							t('commands/random:inputerror', {
 								user: message.author.tag,
 								prefix: await this.container.client.fetchPrefix(message)
 							})
 						);
 					}
-					return this.randomNumber(0, max, message.author.tag, message);
+					return this.randomNumber(0, max, t, message.author.tag, message);
 				case 2:
 					let minRd = await args.next();
 					let maxRd = await args.next();
 					if (maxRd < minRd) {
-						return this.randomNumber(maxRd, minRd, message.author.tag, message);
+						return this.randomNumber(maxRd, minRd, t, message.author.tag, message);
 					}
-					return this.randomNumber(minRd, maxRd, message.author.tag, message);
+					return this.randomNumber(minRd, maxRd, t, message.author.tag, message);
 			}
 		}
 		const input = [];
@@ -75,12 +74,11 @@ class UserCommand extends WynnCommand {
 	async randomNumber(max, min, t, tag, message) {
 		min = Math.ceil(min);
 		max = Math.floor(max);
-		return send(
+		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/random:result', {
 				result: Math.floor(Math.random() * (max - min + 1)) + min,
-				user: tag,
-				prefix: await this.container.client.fetchPrefix(message)
+				user: tag
 			})
 		);
 	}
@@ -104,22 +102,22 @@ class UserCommand extends WynnCommand {
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
-		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		return await this.mainProcess(
-			Number(interaction.options.getInteger('pickmoney')),
-			interaction,
-			t,
-			interaction.user.id,
-			interaction.user.tag,
-			userInfo
-		);
+		let max = interaction.options.getInteger('upper');
+		let min = interaction.options.getInteger('lower');
+		max = max === null ? 100 : max;
+		min = min === null ? 0 : min;
+		if (max < min) {
+			return await this.randomNumber(min, max, t, interaction.user.tag, interaction);
+		}
+		return await this.randomNumber(max, min, t, interaction.user.tag, interaction);
 	}
 }
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('pick')
-		.setDescription('pick money !!!')
-		.addIntegerOption((option) => option.setName('pickmoney').setDescription('Enter an integer').setRequired(true)),
+		.setName('random')
+		.setDescription('random')
+		.addIntegerOption((option) => option.setName('upper').setDescription('Enter an integer max').setRequired(false))
+		.addIntegerOption((option) => option.setName('lower').setDescription('Enter an integer min').setRequired(false)),
 	UserCommand
 };

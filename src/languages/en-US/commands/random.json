@@ -1,0 +1,7 @@
+{
+	"usage": "{{prefix}}random 1 100",
+	"example": ["{{prefix}}random", "{{prefix}}random 100", "{{prefix}}random 1 100"],
+	"inputerror": "**{{user}}** wrong input. Example: {{prefix}}random 1 100",
+	"description": "Choose a random number",
+	"result": "**{{user}}** your lucky number is **{{result}}**"
+}

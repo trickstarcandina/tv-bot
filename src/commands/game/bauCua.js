@@ -120,27 +120,32 @@ class UserCommand extends WynnCommand {
 					.setEmoji(dices.bau),
 				new MessageButton()
 					.setCustomId(`${dices.cua}`)
-					.setLabel(t('commands/baucua:cua', { emo: dices.cua }))
-					.setStyle('SECONDARY'),
+					.setLabel(t('commands/baucua:cua', { emo: '' }))
+					.setStyle('SECONDARY')
+					.setEmoji(dices.cua),
 				new MessageButton()
 					.setCustomId(`${dices.ca}`)
-					.setLabel(t('commands/baucua:ca', { emo: dices.ca }))
+					.setLabel(t('commands/baucua:ca', { emo: '' }))
 					.setStyle('SECONDARY')
+					.setEmoji(dices.ca)
 			);
 			const row2 = new MessageActionRow().addComponents(
 				new MessageButton().setCustomId(`${cancel}`).setLabel(`✖`).setStyle('DANGER'),
 				new MessageButton()
 					.setCustomId(`${dices.ga}`)
-					.setLabel(t('commands/baucua:ga', { emo: dices.ga }))
-					.setStyle('SECONDARY'),
+					.setLabel(t('commands/baucua:ga', { emo: '' }))
+					.setStyle('SECONDARY')
+					.setEmoji(dices.ga),
 				new MessageButton()
 					.setCustomId(`${dices.tom}`)
-					.setLabel(t('commands/baucua:tom', { emo: dices.tom }))
-					.setStyle('SECONDARY'),
+					.setLabel(t('commands/baucua:tom', { emo: '' }))
+					.setStyle('SECONDARY')
+					.setEmoji(dices.tom),
 				new MessageButton()
 					.setCustomId(`${dices.nai}`)
-					.setLabel(t('commands/baucua:nai', { emo: dices.nai }))
+					.setLabel(t('commands/baucua:nai', { emo: '' }))
 					.setStyle('SECONDARY')
+					.setEmoji(dices.nai)
 			);
 			let newMsg = await send(message, { embeds: [embedMSG], components: [row, row2] });
 			//bet and result
