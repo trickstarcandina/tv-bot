@@ -3,5 +3,5 @@
 	"example": ["{{prefix}}random", "{{prefix}}random 100", "{{prefix}}random 1 100"],
 	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}random 1 100",
 	"description": "Chọn số ngẫu nhiên",
-	"result": "**{{user}}** con số may mắn của bạn là **{{result}}**"
+	"result": "{{emoji}} Con số may mắn của **{{user}}** là **{{result}}**"
 }

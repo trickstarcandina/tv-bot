@@ -27,5 +27,10 @@ module.exports = {
 			t3: '✅',
 			load: '✅'
 		}
+	},
+	utility: {
+		random: {
+			emoji: '<a:zTV_ztv:914756022609014794>'
+		}
 	}
 };

@@ -27,5 +27,9 @@ module.exports = {
 	inventory: {
 		inv: 30000,
 		sell: 10000
+	},
+	utility: {
+		calc: 15000,
+		random: 5000
 	}
 };

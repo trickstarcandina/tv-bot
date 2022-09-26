@@ -6,6 +6,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 const coolDown = require('../../config/cooldown');
 const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
+const emoji = require('../../config/emoji');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -26,7 +27,7 @@ class UserCommand extends WynnCommand {
 			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
 		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.pick, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.utility.random, t);
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
@@ -78,7 +79,8 @@ class UserCommand extends WynnCommand {
 			message,
 			t('commands/random:result', {
 				result: Math.floor(Math.random() * (max - min + 1)) + min,
-				user: tag
+				user: tag,
+				emoji: emoji.utility.random.emoji
 			})
 		);
 	}
@@ -98,7 +100,7 @@ class UserCommand extends WynnCommand {
 			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
 		}
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.pick, t);
+		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.utility.random, t);
 		if (checkCoolDown) {
 			return await interaction.reply(checkCoolDown);
 		}
