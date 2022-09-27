@@ -37,6 +37,9 @@ class UserCommand extends WynnCommand {
 				case 0:
 					return this.randomNumber(0, 100, t, message.author.tag, message);
 				case 1:
+					if (isNaN(args.parser.parserOutput.ordered[0])) {
+						break;
+					}
 					let max = await args.next();
 					if (isNaN(max)) {
 						await this.container.client.resetCustomCooldown(message.author.id, this.name);
@@ -50,6 +53,9 @@ class UserCommand extends WynnCommand {
 					}
 					return this.randomNumber(0, max, t, message.author.tag, message);
 				case 2:
+					if (isNaN(args.parser.parserOutput.ordered[0]) || isNaN(args.parser.parserOutput.ordered[1])) {
+						break;
+					}
 					let minRd = await args.next();
 					let maxRd = await args.next();
 					if (maxRd < minRd) {
@@ -58,18 +64,12 @@ class UserCommand extends WynnCommand {
 					return this.randomNumber(minRd, maxRd, t, message.author.tag, message);
 			}
 		}
-		const input = [];
-		for (let i = 0; i < argsLength; i++) {
-			if (i === 0) {
-				input.push(parseInt(args.parser.parserOutput.ordered[i].value));
-			} else if (i < 4) {
-				input.push(args.parser.parserOutput.ordered[i].value);
-			} else {
-				description += args.parser.parserOutput.ordered[i].value + ' ';
-			}
+		let input = args.message.content.split(',');
+		input[0] = input[0].substring(input[0].indexOf(' ') + 1, input[0].length);
+		for (let index = 0; index < input.length; index++) {
+			input[index] = input[index].trim();
 		}
-
-		return this.mainProcess(pickmoney, message, t, message.author.id, message.author.tag, userInfo);
+		return this.randomString(input, t, message.author.tag, message);
 	}
 
 	async randomNumber(max, min, t, tag, message) {
@@ -85,8 +85,16 @@ class UserCommand extends WynnCommand {
 		);
 	}
 
-	async mainProcess(pickmoney, message, t, userId, tag, userInfo) {
+	async randomString(input, t, tag, message) {
 		try {
+			return await utils.returnSlashAndMessage(
+				message,
+				t('commands/random:resultString', {
+					result: input[Math.floor(Math.random() * input.length)],
+					user: tag,
+					emoji: emoji.utility.random.emoji
+				})
+			);
 		} catch (err) {
 			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
