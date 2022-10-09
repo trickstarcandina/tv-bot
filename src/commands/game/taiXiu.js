@@ -64,55 +64,54 @@ class UserCommand extends WynnCommand {
 		let result1 = convertEmoji(randDices[0], dices);
 		let result2 = convertEmoji(randDices[1], dices);
 		let result3 = convertEmoji(randDices[2], dices);
-		let lastResult = await send(message, loadEmoji + ' ' + loadEmoji + ' ' + loadEmoji);
+		let lastResult = await message.channel.send(loadEmoji + ' ' + loadEmoji + ' ' + loadEmoji);
 		await wait(1111);
 		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + loadEmoji);
 		await wait(2222);
 		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + result3);
 		await wait(3333);
 		let total = randDices[0] + randDices[1] + randDices[2] + 3;
-		const lastTextReturn =
-			': ' +
-			total +
-			'\n       ' +
-			result1 +
-			' ' +
-			result2 +
-			' ' +
-			result3 +
-			'\n' +
-			'**' +
-			convertName(randDices[0]) +
-			' ✧ ' +
-			convertName(randDices[1]) +
-			' ✧ ' +
-			convertName(randDices[2]) +
-			'**';
 		switch (true) {
 			case total < 11 && total % 2 === 0:
-				return await lastResult.edit(
-					t('commands/taixiu:xiuchan', {
-						amount: lastTextReturn
-					})
-				);
+				return await Promise.all([
+					lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
+					send(
+						message,
+						t('commands/taixiu:xiuchan', {
+							amount: total
+						})
+					)
+				]);
 			case total < 11 && total % 2 === 1:
-				return await lastResult.edit(
-					t('commands/taixiu:xiule', {
-						amount: lastTextReturn
-					})
-				);
+				return await Promise.all([
+					lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
+					send(
+						message,
+						t('commands/taixiu:xiule', {
+							amount: total
+						})
+					)
+				]);
 			case total > 10 && total % 2 === 0:
-				return await lastResult.edit(
-					t('commands/taixiu:taichan', {
-						amount: lastTextReturn
-					})
-				);
+				return await Promise.all([
+					lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
+					send(
+						message,
+						t('commands/taixiu:taichan', {
+							amount: total
+						})
+					)
+				]);
 			case total > 10 && total % 2 === 1:
-				return await lastResult.edit(
-					t('commands/taixiu:taile', {
-						amount: lastTextReturn
-					})
-				);
+				return await Promise.all([
+					lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
+					send(
+						message,
+						t('commands/taixiu:taile', {
+							amount: total
+						})
+					)
+				]);
 		}
 	}
 
@@ -147,23 +146,6 @@ function convertEmoji(x, dices) {
 	if (x == 3) return dices.four;
 	if (x == 4) return dices.five;
 	if (x == 5) return dices.six;
-}
-
-function convertName(x) {
-	switch (x) {
-		case 0:
-			return 'Một';
-		case 1:
-			return 'Hai';
-		case 2:
-			return 'Ba';
-		case 3:
-			return 'Bốn';
-		case 4:
-			return 'Năm';
-		case 5:
-			return 'Sáu';
-	}
 }
 
 module.exports = {
