@@ -5,8 +5,8 @@
 	"rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
 	"nomoney": "**{{user}}** không đủ tiền để chơi tài xỉu",
 	"description": "Tài Xỉu",
-	"xiuchan": "*===> Xỉu chẵn* {{amount}}",
-	"xiule": "*===> Xỉu lẻ* {{amount}}",
-	"taichan": "*===> Tài chẵn* {{amount}}",
-	"taile": "*===> Tài lẻ {{amount}}"
+	"xiuchan": "*===> Xỉu • Chẵn • {{amount}}*",
+	"xiule": "*===> Xỉu • Lẻ • {{amount}}*",
+	"taichan": "*===> Tài • Chẵn • {{amount}}*",
+	"taile": "*===> Tài • Lẻ • {{amount}}*"
 }
