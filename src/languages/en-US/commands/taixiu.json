@@ -8,5 +8,5 @@
 	"xiuchan": "*===> Xỉu chẵn* {{amount}}",
 	"xiule": "*===> Xỉu lẻ* {{amount}}",
 	"taichan": "*===> Tài chẵn* {{amount}}",
-	"taile": "*===> Tài lẻ {{amount}}"
+	"taile": "*===> Tài lẻ* {{amount}}"
 }
