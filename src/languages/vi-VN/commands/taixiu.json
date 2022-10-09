@@ -1,0 +1,12 @@
+{
+	"usage": "{{prefix}}tx 1000",
+	"example": ["{{prefix}}tx 1000"],
+	"inputerror": "**{{user}}** nhập sai đầu vào. Ví dụ : {{prefix}}tx 1000",
+	"rangeerror": "**{{user}}** vui lòng đặt trong khoảng từ {{min}} đến {{max}}",
+	"nomoney": "**{{user}}** không đủ tiền để chơi tài xỉu",
+	"description": "Tài Xỉu",
+	"xiuchan": "*===> Xỉu chẵn* {{amount}}",
+	"xiule": "*===> Xỉu lẻ* {{amount}}",
+	"taichan": "*===> Tài chẵn* {{amount}}",
+	"taile": "*===> Tài lẻ {{amount}}"
+}

@@ -32,28 +32,20 @@ class UserCommand extends WynnCommand {
 			return send(message, checkCoolDown);
 		}
 		const argsLength = args.parser.parserOutput.ordered.length;
-		if (argsLength < 3) {
+		if (argsLength < 3 || !isNaN(args.parser.parserOutput.ordered[0])) {
+			let checkArgs1 = isNaN(args.parser.parserOutput.ordered[0]);
+			let checkArgs2 = isNaN(args.parser.parserOutput.ordered[1]);
 			switch (argsLength) {
 				case 0:
 					return this.randomNumber(0, 100, t, message.author.tag, message);
 				case 1:
-					if (isNaN(args.parser.parserOutput.ordered[0])) {
+					if (checkArgs1) {
 						break;
 					}
 					let max = await args.next();
-					if (isNaN(max)) {
-						await this.container.client.resetCustomCooldown(message.author.id, this.name);
-						return send(
-							message,
-							t('commands/random:inputerror', {
-								user: message.author.tag,
-								prefix: await this.container.client.fetchPrefix(message)
-							})
-						);
-					}
 					return this.randomNumber(0, max, t, message.author.tag, message);
 				case 2:
-					if (isNaN(args.parser.parserOutput.ordered[0]) || isNaN(args.parser.parserOutput.ordered[1])) {
+					if (checkArgs1 || checkArgs2) {
 						break;
 					}
 					let minRd = await args.next();
@@ -62,6 +54,20 @@ class UserCommand extends WynnCommand {
 						return this.randomNumber(maxRd, minRd, t, message.author.tag, message);
 					}
 					return this.randomNumber(minRd, maxRd, t, message.author.tag, message);
+				default:
+					if (!checkArgs1 && !checkArgs2) {
+						let minRd = await args.next();
+						let maxRd = await args.next();
+						if (maxRd < minRd) {
+							return this.randomNumber(maxRd, minRd, t, message.author.tag, message);
+						}
+						return this.randomNumber(minRd, maxRd, t, message.author.tag, message);
+					} else if (!checkArgs1) {
+						let max = await args.next();
+						return this.randomNumber(0, max, t, message.author.tag, message);
+					} else {
+						break;
+					}
 			}
 		}
 		let input = args.message.content.split(',');
