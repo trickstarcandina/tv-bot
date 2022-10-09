@@ -5,8 +5,8 @@
 	"rangeerror": "**{{user}}** please set between {{min}} and {{max}}",
 	"nomoney": "**{{user}}** don't have enough money to bet tai xiu",
 	"description": "Tài Xỉu",
-	"xiuchan": "*===> Xỉu • Chẵn • {{amount}}*",
-	"xiule": "*===> Xỉu • Lẻ • {{amount}}*",
-	"taichan": "*===> Tài • Chẵn • {{amount}}*",
-	"taile": "*===> Tài • Lẻ • {{amount}}*"
+	"xiuchan": "** Xỉu • Chẵn • {{amount}}**",
+	"xiule": "** Xỉu • Lẻ • {{amount}}**",
+	"taichan": "** Tài • Chẵn • {{amount}}**",
+	"taile": "** Tài • Lẻ • {{amount}}**"
 }
