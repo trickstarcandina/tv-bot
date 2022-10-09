@@ -18,12 +18,7 @@ const dices = {
 	five: emoji.game.taixiu.five,
 	six: emoji.game.taixiu.six
 };
-const dice_icon = emoji.game.baucua.dice;
-const loadEmoji = emoji.game.baucua.load;
-const cancel = emoji.common.tick_x;
-const blank = emoji.common.blank;
-const maxBet = game.baucua.max;
-const minBet = game.baucua.min;
+const loadEmoji = emoji.game.taixiu.dice;
 
 const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 
@@ -51,17 +46,17 @@ class UserCommand extends WynnCommand {
 		if (checkCoolDown) {
 			return send(message, checkCoolDown);
 		}
-		let input = await args.next();
-		let userInfo = await this.container.client.db.fetchUser(message.author.id);
-		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
+		// let input = await args.next();
+		// let userInfo = await this.container.client.db.fetchUser(message.author.id);
+		// let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
-		if (isNaN(betMoney) || input === null) {
-			return await this.randomBauCua(message);
-		}
-		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
+		// if (isNaN(betMoney) || input === null) {
+		return await this.randomTaiXiu(message, t);
+		// }
+		// return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
 	}
 
-	async randomTaiXiu(message) {
+	async randomTaiXiu(message, t) {
 		let randDices = [];
 		while (randDices.length < 3) {
 			randDices.push(Math.floor(Math.random() * 6));
@@ -75,10 +70,50 @@ class UserCommand extends WynnCommand {
 		await wait(2222);
 		await lastResult.edit(result1 + ' ' + loadEmoji + ' ' + result3);
 		await wait(3333);
-		return await Promise.all([
-			lastResult.edit(result1 + ' ' + result2 + ' ' + result3),
-			message.channel.send('**' + convertName(randDices[0]) + ' ✧ ' + convertName(randDices[1]) + ' ✧ ' + convertName(randDices[2]) + '**')
-		]);
+		let total = randDices[0] + randDices[1] + randDices[2] + 3;
+		const lastTextReturn =
+			': ' +
+			total +
+			'\n       ' +
+			result1 +
+			' ' +
+			result2 +
+			' ' +
+			result3 +
+			'\n' +
+			'**' +
+			convertName(randDices[0]) +
+			' ✧ ' +
+			convertName(randDices[1]) +
+			' ✧ ' +
+			convertName(randDices[2]) +
+			'**';
+		switch (true) {
+			case total < 11 && total % 2 === 0:
+				return await lastResult.edit(
+					t('commands/taixiu:xiuchan', {
+						amount: lastTextReturn
+					})
+				);
+			case total < 11 && total % 2 === 1:
+				return await lastResult.edit(
+					t('commands/taixiu:xiule', {
+						amount: lastTextReturn
+					})
+				);
+			case total > 10 && total % 2 === 0:
+				return await lastResult.edit(
+					t('commands/taixiu:taichan', {
+						amount: lastTextReturn
+					})
+				);
+			case total > 10 && total % 2 === 1:
+				return await lastResult.edit(
+					t('commands/taixiu:taile', {
+						amount: lastTextReturn
+					})
+				);
+		}
 	}
 
 	async execute(interaction) {
@@ -93,40 +128,41 @@ class UserCommand extends WynnCommand {
 			return await interaction.reply(checkCoolDown);
 		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
-		return await this.mainProcess(
-			Number(interaction.options.getInteger('betmoney')),
-			interaction,
-			t,
-			userInfo,
-			interaction.user.id,
-			interaction.user.tag
-		);
+		return await interaction.reply('none');
+		// return await this.mainProcess(
+		// 	Number(interaction.options.getInteger('betmoney')),
+		// 	interaction,
+		// 	t,
+		// 	userInfo,
+		// 	interaction.user.id,
+		// 	interaction.user.tag
+		// );
 	}
 }
 
 function convertEmoji(x, dices) {
-	if (x == 0) return dices.bau;
-	if (x == 1) return dices.cua;
-	if (x == 2) return dices.ca;
-	if (x == 3) return dices.ga;
-	if (x == 4) return dices.tom;
-	if (x == 5) return dices.nai;
+	if (x == 0) return dices.one;
+	if (x == 1) return dices.two;
+	if (x == 2) return dices.three;
+	if (x == 3) return dices.four;
+	if (x == 4) return dices.five;
+	if (x == 5) return dices.six;
 }
 
 function convertName(x) {
 	switch (x) {
 		case 0:
-			return 'Bầu';
+			return 'Một';
 		case 1:
-			return 'Cua';
+			return 'Hai';
 		case 2:
-			return 'Cá';
+			return 'Ba';
 		case 3:
-			return 'Gà';
+			return 'Bốn';
 		case 4:
-			return 'Tôm';
+			return 'Năm';
 		case 5:
-			return 'Nai';
+			return 'Sáu';
 	}
 }
 
