@@ -1,5 +1,6 @@
 const { container } = require('@sapphire/framework');
 const { createCaptcha } = require('../../utils/index');
+const utils = require('../../lib/utils');
 
 module.exports.fetchPrefix = async function fetchPrefix(message) {
 	if (message.guild === null) return process.env.PREFIX;
@@ -7,35 +8,11 @@ module.exports.fetchPrefix = async function fetchPrefix(message) {
 	return guild.prefix;
 };
 
-module.exports.checkTimeCoolDown = async function checkTimeCoolDown(id, name, delay, t) {
-	if (process.env.OWNER_IDS.split(',').includes(id)) {
-		return;
-	}
-	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
-	if (Date.now() - getTimeout < 0) {
-		return t('preconditions:preconditionCooldown', {
-			remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
-		});
-	}
-	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
-};
-
-module.exports.checkTimeCoolDownWithCheckSpam = async function checkTimeCoolDownWithCheckSpam(id, name, delay, t) {
-	if (process.env.OWNER_IDS.split(',').includes(id)) {
-		return;
-	}
+module.exports.checkMarco = async function checkMarco(message, id, tag, name, t) {
 	let dateNow = Date.now();
-	//timeout cooldown
-	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
-	if (dateNow - getTimeout < 0) {
-		return t('preconditions:preconditionCooldown', {
-			remaining: `\`${(getTimeout - dateNow) / 1000}s\``
-		});
-	}
-	container.client.options.timeouts.set(`${id}_${name}`, dateNow + (delay || 0));
-	if (process.env.WHITE_LIST.split(',').includes(id)) {
-		return;
-	}
+	// if (process.env.WHITE_LIST.split(',').includes(id)) {
+	// 	return;
+	// }
 	//spamTime
 	let spamTime = container.client.options.spamTime.get(`${id}_${name}`);
 	if (spamTime !== undefined) {
@@ -50,20 +27,76 @@ module.exports.checkTimeCoolDownWithCheckSpam = async function checkTimeCoolDown
 				}
 			}
 			if (point > 5) {
-				return await createCaptcha(true);
+				let captcha = await createCaptcha(true);
+				return await utils.sendCaptchaImage(
+					id,
+					container.client,
+					captcha.image,
+					captcha.text,
+					message,
+					t('commands/captcha:require', {
+						user: tag
+					})
+				);
 			}
 		}
 	}
 	container.client.options.spamTime.set(`${id}_${name}`, spamTime + '_' + dateNow.toString());
 	//spams
 	let countSpam = container.client.options.spams.get(`${id}`) || 0;
-	if (countSpam > 50) {
+	if (countSpam > 20) {
 		//sent captcha
-		return await createCaptcha(true);
+		let captcha = await createCaptcha(true);
+		return await utils.sendCaptchaImage(
+			id,
+			container.client,
+			captcha.image,
+			captcha.text,
+			message,
+			t('commands/captcha:require', {
+				user: tag
+			})
+		);
 	} else {
 		countSpam++;
 		container.client.options.spams.set(`${id}`, countSpam);
 	}
+};
+
+// deprecated
+/*
+module.exports.checkTimeCoolDown = async function checkTimeCoolDown(id, name, delay, t) {
+	if (process.env.OWNER_IDS.split(',').includes(id)) {
+		return;
+	}
+	const getTimeout = container.client.options.timeouts.get(`${id}_${name}`) || 0;
+	if (Date.now() - getTimeout < 0) {
+		return utils.returnSlashAndMessage(
+			message,
+			t('preconditions:preconditionCooldown', {
+				remaining: `\`${(getTimeout - Date.now()) / 1000}s\``
+			})
+		);
+	}
+	container.client.options.timeouts.set(`${id}_${name}`, Date.now() + (delay || 0));
+};
+*/
+
+module.exports.checkCoolDownSlash = async function checkCoolDownSlash(interaction, name, delay, t) {
+	if (process.env.OWNER_IDS.split(',').includes(interaction.user.id)) {
+		return;
+	}
+	let dateNow = Date.now();
+	//timeout cooldown
+	const getTimeout = container.client.options.timeouts.get(`${interaction.user.id}_${name}`) || 0;
+	if (dateNow - getTimeout < 0) {
+		return await interaction.reply(
+			t('preconditions:preconditionCooldown', {
+				remaining: `\`${(getTimeout - dateNow) / 1000}s\``
+			})
+		);
+	}
+	container.client.options.timeouts.set(`${interaction.user.id}_${name}`, dateNow + (delay || 0));
 };
 
 module.exports.resetCooldown = async function resetCooldown(idUser, command) {

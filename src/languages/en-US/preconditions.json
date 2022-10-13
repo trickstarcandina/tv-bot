@@ -3,5 +3,6 @@
 	"preconditionCooldown": "You have just used this command. Try again in {{remaining}}.",
 	"preconditionGuildOnly": "You cannot run this command in DMs.",
 	"preconditionClientPermissions": "I am missing the following permissions to run this command: {{perm}}.",
-	"commandDisabled": "This command has been disabled"
+	"commandDisabled": "This command has been disabled",
+	"RestrictUser": "User is restricted because macro or auto-bot"
 }

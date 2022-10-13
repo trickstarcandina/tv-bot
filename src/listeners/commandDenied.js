@@ -31,6 +31,10 @@ class UserEvent extends Listener {
 			);
 		}
 
+		if (error.identifier === 'RestrictUser') {
+			return;
+		}
+
 		return message.channel
 			.send(t(`preconditions:${error.identifier}`, { ...error.context, returnObjects: true, joinArray: ', ' }))
 			.then((msg) => {

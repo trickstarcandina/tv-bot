@@ -3,8 +3,8 @@ const Discord = require('discord.js');
 
 const {
 	fetchPrefix,
-	checkTimeCoolDown,
-	checkTimeCoolDownWithCheckSpam,
+	checkMarco,
+	checkCoolDownSlash,
 	resetCooldown,
 	setCustomCooldown,
 	resetCustomCooldown,
@@ -47,8 +47,8 @@ class WynnClient extends SapphireClient {
 
 		this.fetchPrefix = fetchPrefix.bind(this);
 		//cooldown
-		this.checkTimeCoolDown = checkTimeCoolDown.bind(this);
-		this.checkTimeCoolDownWithCheckSpam = checkTimeCoolDownWithCheckSpam.bind(this);
+		this.checkMarco = checkMarco.bind(this);
+		this.checkCoolDownSlash = checkCoolDownSlash.bind(this);
 		this.resetCooldown = resetCooldown.bind(this);
 		this.resetCustomCooldown = resetCustomCooldown.bind(this);
 		this.setCustomCooldown = setCustomCooldown.bind(this);
