@@ -12,8 +12,9 @@ class UserCommand extends WynnCommand {
 			aliases: ['calc', 'calculator'],
 			description: 'commands/calc:description',
 			usage: 'commands/calc:usage',
-			example: 'commands/calc:example'
-			//cooldownDelay: 5000
+			example: 'commands/calc:example',
+			cooldownDelay: 15000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 	async messageRun(message) {

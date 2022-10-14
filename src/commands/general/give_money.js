@@ -5,9 +5,6 @@ const emoji = require('../../config/emoji');
 const { logger } = require('../../utils/index');
 const utils = require('../../lib/utils');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const coolDown = require('../../config/cooldown');
-
-const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -17,22 +14,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['give_money', 'give_currency', 'give_cash', 'give_credit', 'give_balance', 'give'],
 			description: 'commands/give_money:description',
 			usage: 'commands/give_money:usage',
-			example: 'commands/give_money:example'
-			// cooldownDelay: 10000
+			example: 'commands/give_money:example',
+			cooldownDelay: 10000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message, args) {
-		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
-		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.general.give_money, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		//user give
 		const userGiveInfo = await this.container.client.db.fetchUser(message.author.id);
 		//user receive
@@ -112,16 +101,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
-		}
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.general.give_money, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		if (interaction.options.getInteger('money') < 1) {
 			return await interaction.reply(
 				t('commands/give_money:inputerror', {

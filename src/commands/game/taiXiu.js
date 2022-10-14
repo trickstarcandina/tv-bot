@@ -8,7 +8,6 @@ const wait = require('node:timers/promises').setTimeout;
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
-const coolDown = require('../../config/cooldown');
 const moneyEmoji = emoji.common.money;
 const dices = {
 	one: emoji.game.taixiu.one,
@@ -20,8 +19,6 @@ const dices = {
 };
 const loadEmoji = emoji.game.taixiu.dice;
 
-const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
-
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
 		super(context, {
@@ -30,22 +27,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['tx', 'taixiu'],
 			description: 'commands/taixiu:description',
 			usage: 'commands/taixiu:usage',
-			example: 'commands/taixiu:example'
-			// cooldownDelay: 25000
+			example: 'commands/taixiu:example',
+			cooldownDelay: 25000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message, args) {
-		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
-		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.baucua, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		// let input = await args.next();
 		// let userInfo = await this.container.client.db.fetchUser(message.author.id);
 		// let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
@@ -116,16 +105,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
-		}
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.baucua, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 		return await interaction.reply('none');
 		// return await this.mainProcess(

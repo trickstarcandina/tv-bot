@@ -4,8 +4,6 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
-const coolDown = require('../../config/cooldown');
-const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 const emoji = require('../../config/emoji');
 
 class UserCommand extends WynnCommand {
@@ -16,21 +14,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['random', 'rd'],
 			description: 'commands/random:description',
 			usage: 'commands/random:usage',
-			example: 'commands/random:example'
+			example: 'commands/random:example',
+			cooldownDelay: 10000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message, args) {
-		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
-		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.utility.random, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		const argsLength = args.parser.parserOutput.ordered.length;
 		try {
 			let checkArgs1 = true;
@@ -44,37 +35,37 @@ class UserCommand extends WynnCommand {
 			if (argsLength < 3 || !checkArgs1) {
 				switch (argsLength) {
 					case 0:
-						return this.randomNumber(0, 100, t, message.author.tag, message);
+						return this.randomNumber(0, 100, t, message.author.tag, message, message.author.id);
 					case 1:
 						if (checkArgs1) {
 							break;
 						}
 						let max = await args.next();
-						return this.randomNumber(0, max, t, message.author.tag, message);
+						return this.randomNumber(0, max, t, message.author.tag, message, message.author.id);
 					case 2:
 						if (checkArgs1 === false && checkArgs2 === true) {
 							let max = await args.next();
-							return this.randomNumber(0, max, t, message.author.tag, message);
+							return this.randomNumber(0, max, t, message.author.tag, message, message.author.id);
 						} else if (checkArgs1) {
 							break;
 						}
 						let minRd = await args.next();
 						let maxRd = await args.next();
 						if (maxRd < minRd) {
-							return this.randomNumber(maxRd, minRd, t, message.author.tag, message);
+							return this.randomNumber(maxRd, minRd, t, message.author.tag, message, message.author.id);
 						}
-						return this.randomNumber(minRd, maxRd, t, message.author.tag, message);
+						return this.randomNumber(minRd, maxRd, t, message.author.tag, message, message.author.id);
 					default:
 						if (!checkArgs1 && !checkArgs2) {
 							let minRd = await args.next();
 							let maxRd = await args.next();
 							if (maxRd < minRd) {
-								return this.randomNumber(maxRd, minRd, t, message.author.tag, message);
+								return this.randomNumber(maxRd, minRd, t, message.author.tag, message, message.author.id);
 							}
-							return this.randomNumber(minRd, maxRd, t, message.author.tag, message);
+							return this.randomNumber(minRd, maxRd, t, message.author.tag, message, message.author.id);
 						} else if (!checkArgs1) {
 							let max = await args.next();
-							return this.randomNumber(0, max, t, message.author.tag, message);
+							return this.randomNumber(0, max, t, message.author.tag, message, message.author.id);
 						} else {
 							break;
 						}
@@ -86,12 +77,23 @@ class UserCommand extends WynnCommand {
 				input[index] = input[index].trim();
 			}
 			return this.randomString(input, t, message.author.tag, message);
-		} catch (e) {}
+		} catch (err) {
+			logger.error(err);
+			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
+		}
 	}
 
-	async randomNumber(max, min, t, tag, message) {
+	async randomNumber(max, min, t, tag, message, userId) {
 		min = Math.ceil(min);
 		max = Math.floor(max);
+		// edit this
+		let customRandom = await this.container.client.db.findCustomRandom(userId);
+		if (customRandom) {
+			return await utils.returnSlashAndMessage(
+				message,
+				customRandom.content.replace('<text>', Math.floor(Math.random() * (max - min + 1)) + min)
+			);
+		}
 		return await utils.returnSlashAndMessage(
 			message,
 			t('commands/random:result', {
@@ -103,40 +105,33 @@ class UserCommand extends WynnCommand {
 	}
 
 	async randomString(input, t, tag, message) {
-		try {
+		let customRandom = await this.container.client.db.findCustomRandom(userId);
+		if (customRandom) {
 			return await utils.returnSlashAndMessage(
 				message,
-				t('commands/random:resultString', {
-					result: input[Math.floor(Math.random() * input.length)],
-					user: tag,
-					emoji: emoji.utility.random.emoji
-				})
+				customRandom.content.replace('<text>', input[Math.floor(Math.random() * input.length)])
 			);
-		} catch (err) {
-			logger.error(err);
-			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
 		}
+		return await utils.returnSlashAndMessage(
+			message,
+			t('commands/random:resultString', {
+				result: input[Math.floor(Math.random() * input.length)],
+				user: tag,
+				emoji: emoji.utility.random.emoji
+			})
+		);
 	}
 
 	async execute(interaction) {
-		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
-		}
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.utility.random, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		let max = interaction.options.getInteger('upper');
 		let min = interaction.options.getInteger('lower');
 		max = max === null ? 100 : max;
 		min = min === null ? 0 : min;
 		if (max < min) {
-			return await this.randomNumber(min, max, t, interaction.user.tag, interaction);
+			return await this.randomNumber(min, max, t, interaction.user.tag, interaction, interaction.user.id);
 		}
-		return await this.randomNumber(max, min, t, interaction.user.tag, interaction);
+		return await this.randomNumber(max, min, t, interaction.user.tag, interaction, interaction.user.id);
 	}
 }
 

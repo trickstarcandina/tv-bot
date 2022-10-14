@@ -57,3 +57,8 @@ const { getCaptchaByDiscordId, updateCaptcha, checkIsBlock } = require('./query/
 module.exports.getCaptchaByDiscordId = getCaptchaByDiscordId;
 module.exports.updateCaptcha = updateCaptcha;
 module.exports.checkIsBlock = checkIsBlock;
+/* CustomRandom */
+const { registerCustomRandom, findCustomRandom, updateCustomRandom } = require('./query/customRandom');
+module.exports.registerCustomRandom = registerCustomRandom;
+module.exports.findCustomRandom = findCustomRandom;
+module.exports.updateCustomRandom = updateCustomRandom;

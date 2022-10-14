@@ -8,7 +8,6 @@ const wait = require('node:timers/promises').setTimeout;
 
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
-const coolDown = require('../../config/cooldown');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const moneyEmoji = emoji.common.money;
 const dices = {
@@ -26,8 +25,6 @@ const blank = emoji.common.blank;
 const maxBet = game.baucua.max;
 const minBet = game.baucua.min;
 
-const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
-
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
 		super(context, {
@@ -36,30 +33,23 @@ class UserCommand extends WynnCommand {
 			aliases: ['bc', 'baucua'],
 			description: 'commands/baucua:description',
 			usage: 'commands/baucua:usage',
-			example: 'commands/baucua:example'
-			// cooldownDelay: 25000
+			example: 'commands/baucua:example',
+			cooldownDelay: 25000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message, args) {
-		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
-		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.baucua, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		let input = await args.next();
 		let userInfo = await this.container.client.db.fetchUser(message.author.id);
 		let betMoney = input === 'all' ? (maxBet <= userInfo.money ? maxBet : userInfo.money) : Number(input);
 		//syntax check
 		if (isNaN(betMoney) || input === null) {
 			return await this.randomBauCua(message);
+		} else {
+			return await this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
 		}
-		return this.mainProcess(betMoney, message, t, userInfo, message.author.id, message.author.tag);
 	}
 
 	async mainProcess(betMoney, message, t, userInfo, userId, tag) {
@@ -341,16 +331,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
-		}
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.baucua, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 		return await this.mainProcess(
 			Number(interaction.options.getInteger('betmoney')),
