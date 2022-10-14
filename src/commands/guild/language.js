@@ -5,7 +5,6 @@ const { logger } = require('../../utils/index');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const utils = require('../../lib/utils');
 const { Permissions } = require('discord.js');
-const coolDown = require('../../config/cooldown');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -16,17 +15,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['lg', 'lang'],
 			usage: 'commands/language:usage',
 			example: 'commands/language:example',
-			preconditions: ['GuildOnly', ['AdminOnly']]
-			// cooldownDelay: 15000
+			preconditions: ['GuildOnly', ['AdminOnly']],
+			cooldownDelay: 15000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message, args) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.guild.lang, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		const arg = await args.pick('string').catch(() => null);
 		return this.mainProcess(arg, message, t);
 	}
@@ -70,10 +66,6 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.guild.lang, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		if (interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
 			return await interaction.reply(await this.mainProcess(interaction.options.getString('language'), interaction, t));
 		}

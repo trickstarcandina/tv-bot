@@ -7,7 +7,6 @@ const { MessageEmbed } = require('discord.js');
 const { logger } = require('../../utils/index');
 const utils = require('../../lib/utils');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const coolDown = require('../../config/cooldown');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -17,17 +16,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['top', 'lb', 'leaderboard'],
 			description: 'commands/top:description',
 			usage: 'commands/top:usage',
-			example: 'commands/top:example'
-			// cooldownDelay: 35000
+			example: 'commands/top:example',
+			cooldownDelay: 35000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message) {
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.general.lb, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		return await this.mainProcess(message, t);
 	}
 
@@ -54,10 +50,6 @@ class UserCommand extends WynnCommand {
 
 	async execute(interaction) {
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.general.lb, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		return await interaction.reply(await this.mainProcess(interaction, t));
 	}
 }

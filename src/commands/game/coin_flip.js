@@ -4,13 +4,10 @@ const { fetchT } = require('@sapphire/plugin-i18next');
 const logger = require('../../utils/logger');
 const game = require('../../config/game');
 const emoji = require('../../config/emoji');
-const coolDown = require('../../config/cooldown');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const betFaces = ['h', 'heads', 't', 'tails'];
 const wait = require('node:timers/promises').setTimeout;
 const utils = require('../../lib/utils');
-
-const reminderCaptcha = require('../../utils/humanVerify/reminderCaptcha');
 
 class UserCommand extends WynnCommand {
 	constructor(context, options) {
@@ -20,22 +17,14 @@ class UserCommand extends WynnCommand {
 			aliases: ['cf', 'coin_flip'],
 			description: 'commands/coin_flip:description',
 			usage: 'commands/coin_flip:usage',
-			example: 'commands/coin_flip:example'
-			// cooldownDelay: 20000
+			example: 'commands/coin_flip:example',
+			cooldownDelay: 20000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
 	async messageRun(message, args) {
-		let isBlock = await this.container.client.db.checkIsBlock(message.author.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${message.author.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(message, this.container.client, message.author.id, message.author.tag);
-		}
 		const t = await fetchT(message);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(message.author.id, this.name, coolDown.game.cf, t);
-		if (checkCoolDown) {
-			return send(message, checkCoolDown);
-		}
 		const userInfo = await this.container.client.db.fetchUser(message.author.id);
 
 		const first = await args.pick('string').catch(() => null);
@@ -153,16 +142,7 @@ class UserCommand extends WynnCommand {
 	}
 
 	async execute(interaction) {
-		let isBlock = await this.container.client.db.checkIsBlock(interaction.user.id);
-		if (isBlock === true) return;
-		if (this.container.client.options.spams.get(`${interaction.user.id}`) === 'warn' || (isBlock.length > 0 && !isBlock[0].isResolve)) {
-			return await reminderCaptcha(interaction, this.container.client, interaction.user.id, interaction.user.tag);
-		}
 		const t = await fetchT(interaction);
-		const checkCoolDown = await this.container.client.checkTimeCoolDown(interaction.user.id, this.name, coolDown.game.cf, t);
-		if (checkCoolDown) {
-			return await interaction.reply(checkCoolDown);
-		}
 		let userInfo = await this.container.client.db.fetchUser(interaction.user.id);
 		return await this.mainProcess(
 			Number(interaction.options.getInteger('betmoney')),

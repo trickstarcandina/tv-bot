@@ -14,7 +14,9 @@ class UserCommand extends WynnCommand {
 			aliases: ['random', 'rd'],
 			description: 'commands/random:description',
 			usage: 'commands/random:usage',
-			example: 'commands/random:example'
+			example: 'commands/random:example',
+			cooldownDelay: 10000,
+			preconditions: [['RestrictUser']]
 		});
 	}
 
