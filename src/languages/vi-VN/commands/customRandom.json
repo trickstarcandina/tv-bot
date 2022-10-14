@@ -1,0 +1,21 @@
+{
+	"usage": "{{prefix}}cr Số may mắn của tôi là: <number>",
+	"example": [
+		"{{prefix}}cr",
+		"{{prefix}}cr info",
+		"{{prefix}}cr Con số may mắn của tôi là: <number>",
+		"{{prefix}}custom_random Con số may mắn của tôi là: <number>"
+	],
+	"inputerror": "**{{user}}** nhập sai. Ví dụ: {{prefix}}cr Số may mắn của tôi là: <number>",
+	"noperm": "**{{user}}** không có quyền đặt ngẫu nhiên tùy chỉnh",
+	"description": "đặt tùy chỉnh ngẫu nhiên !!!",
+	"result": "**{{user}}** đặt tùy chỉnh ngẫu nhiên là: *{{content}}*",
+	"duration": "**{{user}}** có tùy chỉnh ngẫu nhiên cho đến **{{time}}**",
+	"title": "Quyên góp cho Bot TVEGAS để nhận những lợi ích đặc biệt!",
+	"descrp": "`Thông tin chuyển khoản ghi dạng: TVEGAS-DiscordID.`\nPing <@650648676804460558> để nhận quà",
+	"footer": "Khoản đóng góp của bạn sẽ giúp chúng tôi phát triển bot.\nNếu bạn muốn thanh toán bằng phương thức khác, vui lòng liên hệ với chúng tôi",
+	"momo": "MOMO",
+	"momoinfo": "0948361247",
+	"tpbank": "TP Bank",
+	"tpbankinfo": "03467014801\nTrần Ngọc Phương Quỳnh"
+}

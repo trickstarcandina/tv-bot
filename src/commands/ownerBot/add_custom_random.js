@@ -10,13 +10,14 @@ class UserCommand extends WynnCommand {
 			name: 'add_custom_random',
 			description: 'add custom random to user',
 			usage: 'tadd_custom_random <id / @mention> <unlimit/amount>',
-			example: 'tadd_custom_random 662508642251309057'
+			example: 'tadd_custom_random 662508642251309057 1\ntadd_custom_random 662508642251309057 unlimit'
 		});
 	}
+
 	async messageRun(message, args) {
 		const t = await fetchT(message);
 		try {
-			if (process.env.OWNER_IDS.split(',').includes(message.author.id)) {
+			if (process.env.OWNER_IDS.split(',').includes(message.author.id) || process.env.MOD_IDS.split(',').includes(message.author.id)) {
 				let mentionUser = message.mentions.users.first();
 				let userInfo = null;
 				const mentions = await args.next();
@@ -37,7 +38,7 @@ class UserCommand extends WynnCommand {
 				} else {
 					await this.container.client.db.registerCustomRandom(discordId, 1);
 				}
-				logger.warn(`User: ${discordId} | add customRandom | By ${message.author.id}`);
+				logger.warn(`User: ${discordId} | add customRandom | By ${message.author.id} | ${amount}`);
 				return message.channel.send(`Successfully added customrandom to <@${discordId}>`);
 			}
 		} catch (err) {

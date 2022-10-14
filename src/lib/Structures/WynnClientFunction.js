@@ -10,9 +10,9 @@ module.exports.fetchPrefix = async function fetchPrefix(message) {
 
 module.exports.checkMarco = async function checkMarco(message, id, tag, name, t) {
 	let dateNow = Date.now();
-	// if (process.env.WHITE_LIST.split(',').includes(id)) {
-	// 	return;
-	// }
+	if (process.env.MOD_IDS.split(',').includes(id) || process.env.OWNER_IDS.split(',').includes(id)) {
+		return;
+	}
 	//spamTime
 	let spamTime = container.client.options.spamTime.get(`${id}_${name}`);
 	if (spamTime !== undefined) {
