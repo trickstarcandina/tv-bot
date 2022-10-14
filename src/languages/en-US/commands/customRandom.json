@@ -1,0 +1,21 @@
+{
+	"usage": "{{prefix}}cr My lucky number is: <number>",
+	"example": [
+		"{{prefix}}cr",
+		"{{prefix}}cr info",
+		"{{prefix}}cr My lucky number is: <number>",
+		"{{prefix}}custom_random My lucky number is: <number>"
+	],
+	"inputerror": "**{{user}}** wrong input. Example: {{prefix}}cr My lucky number is: <number>",
+	"noperm": "**{{user}}** no permission to set custom random",
+	"description": "set custom random !!!",
+	"result": "**{{user}}** set custom random is: *{{content}}*",
+	"duration": "**{{user}}** have custom random until **{{time}}**",
+	"title": "Donate to TVEGAS Bot for special benefits!",
+	"descrp": "`Transfer information in the form: TVEGAS-DiscordID.`\nPing <@650648676804460558> to receive gift.",
+	"footer": "Your donation will help us develop the bot.\nIf you want to pay by another method, please contact us.",
+	"momo": "MOMO",
+	"momoinfo": "0948361247",
+	"tpbank": "TP Bank",
+	"tpbankinfo": "03467014801\nTrần Ngọc Phương Quỳnh"
+}

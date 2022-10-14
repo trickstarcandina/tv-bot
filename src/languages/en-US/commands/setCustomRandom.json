@@ -1,8 +1,0 @@
-{
-	"usage": "{{prefix}}setcr My lucky number is: <text>",
-	"example": ["{{prefix}}setcr My lucky number is: <text>", "{{prefix}}set_custom_random My lucky number is: <text>"],
-	"inputerror": "**{{user}}** wrong input. Example: {{prefix}}setcr My lucky number is: <text>",
-	"noperm": "**{{user}}** no permission to set custom random",
-	"description": "set custom random !!!",
-	"result": "**{{user}}** set custom random is: *{{content}}*"
-}

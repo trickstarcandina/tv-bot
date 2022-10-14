@@ -91,7 +91,7 @@ class UserCommand extends WynnCommand {
 		if (customRandom) {
 			return await utils.returnSlashAndMessage(
 				message,
-				customRandom.content.replace('<text>', Math.floor(Math.random() * (max - min + 1)) + min)
+				customRandom.content.replace('<number>', Math.floor(Math.random() * (max - min + 1)) + min)
 			);
 		}
 		return await utils.returnSlashAndMessage(
@@ -109,7 +109,7 @@ class UserCommand extends WynnCommand {
 		if (customRandom) {
 			return await utils.returnSlashAndMessage(
 				message,
-				customRandom.content.replace('<text>', input[Math.floor(Math.random() * input.length)])
+				customRandom.content.replace('<number>', input[Math.floor(Math.random() * input.length)])
 			);
 		}
 		return await utils.returnSlashAndMessage(

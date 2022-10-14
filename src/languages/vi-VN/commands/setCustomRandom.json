@@ -1,8 +1,0 @@
-{
-	"usage": "{{prefix}}setcr Số may mắn của tôi là: <text>",
-	"example": ["{{prefix}}setcr Con số may mắn của tôi là: <text>", "{{prefix}}set_custom_random Con số may mắn của tôi là: <text>"],
-	"inputerror": "**{{user}}** nhập sai. Ví dụ: {{prefix}}setcr Số may mắn của tôi là: <text>",
-	"noperm": "**{{user}}** không có quyền đặt ngẫu nhiên tùy chỉnh",
-	"description": "đặt tùy chỉnh ngẫu nhiên !!!",
-	"result": "**{{user}}** đặt tùy chỉnh ngẫu nhiên là: *{{content}}*"
-}
