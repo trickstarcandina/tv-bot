@@ -76,7 +76,7 @@ class UserCommand extends WynnCommand {
 			for (let index = 0; index < input.length; index++) {
 				input[index] = input[index].trim();
 			}
-			return this.randomString(input, t, message.author.tag, message);
+			return this.randomString(input, t, message.author.tag, message, message.author.id);
 		} catch (err) {
 			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));
@@ -104,7 +104,7 @@ class UserCommand extends WynnCommand {
 		);
 	}
 
-	async randomString(input, t, tag, message) {
+	async randomString(input, t, tag, message, userId) {
 		let customRandom = await this.container.client.db.findCustomRandom(userId);
 		if (customRandom) {
 			return await utils.returnSlashAndMessage(
