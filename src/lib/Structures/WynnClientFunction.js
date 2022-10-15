@@ -44,7 +44,7 @@ module.exports.checkMarco = async function checkMarco(message, id, tag, name, t)
 	container.client.options.spamTime.set(`${id}_${name}`, spamTime + '_' + dateNow.toString());
 	//spams
 	let countSpam = container.client.options.spams.get(`${id}`) || 0;
-	if (countSpam > 50) {
+	if (countSpam > 68) {
 		//sent captcha
 		let captcha = await createCaptcha(true);
 		return await utils.sendCaptchaImage(

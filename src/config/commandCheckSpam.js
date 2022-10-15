@@ -1,3 +1,3 @@
 module.exports = {
-	command: ['fishing', 'species', 'inventory']
+	command: ['baucua', 'coin_flip', 'drop', 'pick', 'slot', 'taixiu', 'random']
 };
