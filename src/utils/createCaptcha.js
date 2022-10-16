@@ -1,5 +1,8 @@
 const { Canvas } = require('canvas');
 const { shuffle } = require('lodash');
+const { registerFont } = require('canvas');
+registerFont('./Roboto-Regular.ttf', { family: 'Roboto' });
+
 const chars = [
 	'a',
 	'b',
@@ -119,7 +122,7 @@ module.exports = async function createCaptcha(caseSensitive) {
 	}
 
 	// Set style for text
-	ctx.font = '80px Sans';
+	ctx.font = '80px "Roboto"';
 	ctx.fillStyle = '#000';
 
 	// Set position for text

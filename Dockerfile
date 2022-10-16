@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:18.11.0-alpine3.16
 RUN mkdir -p /usr/src/bot
 WORKDIR /usr/src/bot
 COPY package.json /usr/src/bot
