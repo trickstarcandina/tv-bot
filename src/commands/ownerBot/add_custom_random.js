@@ -39,7 +39,9 @@ class UserCommand extends WynnCommand {
 					await this.container.client.db.registerCustomRandom(discordId, 1);
 				}
 				logger.warn(`User: ${discordId} | add customRandom | By ${message.author.id} | ${amount}`);
-				return message.channel.send(`Successfully added customrandom to <@${discordId}>`);
+				await message.channel.send(`Successfully added customrandom to <@${discordId}>`);
+				const channel = this.container.client.channels.cache.get('920702944146518037');
+				return await channel.send(`User: ${discordId} | add customRandom | By ${message.author.id} | ${amount}`);
 			}
 		} catch (err) {
 			logger.error(err);
