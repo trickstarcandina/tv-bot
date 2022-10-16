@@ -9,11 +9,12 @@ module.exports.fetchPrefix = async function fetchPrefix(message) {
 };
 
 module.exports.checkMarco = async function checkMarco(message, id, tag, name, t) {
-	let dateNow = Date.now();
+	// let dateNow = Date.now();
 	if (process.env.MOD_IDS.split(',').includes(id) || process.env.OWNER_IDS.split(',').includes(id)) {
 		return;
 	}
 	//spamTime
+	/*
 	let spamTime = container.client.options.spamTime.get(`${id}_${name}`);
 	if (spamTime !== undefined) {
 		// check
@@ -42,6 +43,7 @@ module.exports.checkMarco = async function checkMarco(message, id, tag, name, t)
 		}
 	}
 	container.client.options.spamTime.set(`${id}_${name}`, spamTime + '_' + dateNow.toString());
+	*/
 	//spams
 	let countSpam = container.client.options.spams.get(`${id}`) || 0;
 	if (countSpam > 68) {

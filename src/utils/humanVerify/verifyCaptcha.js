@@ -24,7 +24,7 @@ module.exports = async function verifyCaptcha(message, client) {
 		);
 	} else if (captchaUser.captcha === message.content) {
 		// ok
-		cmdCheckSpam.command.forEach((element) => client.options.spamTime.set(`${message.author.id}_${element}`, '_'));
+		// cmdCheckSpam.command.forEach((element) => client.options.spamTime.set(`${message.author.id}_${element}`, '_'));
 		client.options.spams.set(`${message.author.id}`, 0);
 		await client.db.updateCaptcha(message.author.id, {
 			isResolve: true,
