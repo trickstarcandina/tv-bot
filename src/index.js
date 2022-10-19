@@ -25,7 +25,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 const client = new WynnClient({
 	defaultPrefix: process.env.PREFIX,
-	regexPrefix: RegExp('(^(hey +)?bot[,! ])|(' + process.env.PREFIX.toString().toLocaleUpperCase() + ')'),
+	// regexPrefix: RegExp('(^(hey +)?bot[,! ])|(' + process.env.PREFIX.toString().toLocaleUpperCase() + ')'),
 	//regexPrefix/i,
 	caseInsensitiveCommands: true,
 	caseInsensitivePrefixes: true,

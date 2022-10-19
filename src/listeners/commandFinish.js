@@ -7,8 +7,8 @@ class UserEvent extends Listener {
 	}
 
 	async run(message) {
-		const t = await fetchT(message);
-		await this.container.client.checkMarco(message, message.author.id, message.author.tag, this.name, t);
+		// const t = await fetchT(message);
+		// await this.container.client.checkMarco(message, message.author.id, message.author.tag, this.name, t);
 	}
 }
 
