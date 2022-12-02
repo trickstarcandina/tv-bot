@@ -1,0 +1,889 @@
+require('events').EventEmitter.prototype._maxListeners = Infinity;
+require('events').defaultMaxListeners = Infinity;
+const Discord = require("discord.js");	
+require('dotenv').config();
+const randomColor = require("randomcolor");
+const fs = require('fs');
+let cardid = JSON.parse(fs.readFileSync('./cardid.json', 'utf8'));
+const { listenerCount } = require("events");
+const Database = require("@replit/database")
+const db = new Database()
+let bot = new Discord.Client();	
+const webhookClient = new Discord.WebhookClient(process.env.WH_ID, process.env.WH_TOKEN);
+
+async function log(title,des)
+{
+  const embedlog = new Discord.MessageEmbed()
+	.setTitle(title)
+	.setColor('#e24d4f')
+  .setDescription(des)
+  .setTimestamp();
+
+  webhookClient.send(embedlog);
+}
+
+let data;
+db.get("data").then(value => {data=value});
+let gua;
+db.get("gua").then(value => {gua=value});
+
+if(!data) data = {};
+if(!gua) gua = {};
+
+bot.on('ready', () =>
+{	  
+	bot.user.setActivity(`Prefix: V - Vietnamese Community`);
+	console.log("Online!");	
+})	
+
+function embedGen()
+{
+	var color= randomColor();
+	const embed = new Discord.MessageEmbed();
+	//embed.setColor('06319a');
+	embed.setColor(color);
+	embed.setAuthor('');
+	embed.setFooter('Powered by Vietnamese Community');
+	embed.setTimestamp();
+	return embed; 
+}
+
+bot.on('message', async (message) => 
+{
+	var msg=message.content;
+	if(message.author.bot||!msg.toUpperCase().startsWith(process.env.PREFIX)) return ;
+  let msi = message.channel.id;
+  if(msi!='872365091146838046'&&msi!='758637445792661524'&&msi!='844215808280494130'&&msi!='849278847761383464'&&msi!='849243318914383892'&&msi!='841745688646909954'&&msi!='849242960549642270'&&msi!='798143928397332490'&&msi!='872090310698741830'&&message.author.id!='687301490238554160')
+  {
+   // message.channel.send(`Bot chỉ hoạt động tại Sòng Bạc <#849278847761383464> hoặc <#849243318914383892>!`)
+    return;
+  }
+	const S= msg.substr(process.env.PREFIX.length).split(' ');
+	let field = [];
+	for (const i of S) if(i != '') field.push(i.toUpperCase());
+	let normal = [];
+	for (const i of S) if(i != '') normal.push(i);
+
+	if(field[0]==='HELP')
+	{
+		const helpE = embedGen();
+		if(field.length===1)
+		{
+			helpE.setTitle('DANH SÁCH LỆNH CỦA BOT');
+			helpE.setDescription('Sử dụng lệnh: `vchelp + <tên lệnh>` để tìm hiểu rõ chức năng chi tiết của lệnh đó \n VD: `vchelp random`');
+			helpE.addFields(
+						{
+							name: "<a:abc:713187570741149787>",
+							value: "`xoano` `rd` `pick` `baolanh` `note` `help` `list` `xem`"
+						}
+					)
+					message.channel.send(helpE);
+				}
+				else
+				{
+					switch(field[1])
+					{
+						case 'HELP':
+						{
+							helpE.setTitle(`HELP`);
+							helpE.setDescription(`Dùng để xem danh sách lệnh của bot`);
+						}	
+						break;
+            case 'RD':
+            case 'RAND':
+						case 'RANDOM':
+						{
+							helpE.setTitle(`RANDOM + [GIÁ TRỊ MIN] + [GIÁ TRỊ MAX]`);
+							helpE.setDescription(`Dùng để random số`);
+							helpE.addFields(
+								{
+									name: "Ví dụ",
+									value: "```vcgrandom``` ```vcgrandom 100``` ```vcgrandom 100 200```"
+								}
+							)
+						}	
+						break;
+            case 'P':
+						case 'PICK':
+						{
+							helpE.setTitle(`PICK + <Lựa chọn 1>,<Lựa chọn 2>,[Lựa chọn 3],...`);
+							helpE.setDescription(`Dùng để chọn random trong các lựa chọn`);
+							helpE.addFields(
+								{
+									name: "Ví dụ",
+									value: "```vcgpick abc,xyz,123```"
+								}
+							)
+						}	
+						break;
+						case 'PRAY':
+						{
+							helpE.setTitle(`PRAY`);
+							helpE.setDescription(`Dùng để cầu nguyện`);
+						}	
+						break;
+            case 'NOTE':
+            case 'GN':
+						case 'GHINO':
+						{
+							helpE.setTitle(`GHINO <người nợ> <số tiền> <chủ nợ>`);
+							helpE.setDescription(`Dùng để ghi nợ`);
+							helpE.addFields(
+								{
+									name: "Ví dụ",
+									value: "```vcg <@123456789> 100 <@987654321>```"
+								}
+							)
+						}	
+						break;
+						case 'LIST':
+						{
+							helpE.setTitle(`LIST`);
+							helpE.setDescription(`Dùng để xem list nợ`);
+						}	
+						break;
+            case 'XN':
+						case 'XOANO':
+						{
+							helpE.setTitle(`XOANO <id>`);
+							helpE.setDescription(`Dùng để xóa nợ`);
+							helpE.addFields(
+								{
+									name: "Ví dụ",
+									value: "```vcg 1234567890987```"
+								}
+							)
+						}	
+						break;
+            case 'X':
+						case 'XEM':
+						{
+							helpE.setTitle(`XEM <mention>`);
+							helpE.setDescription(`Dùng để xem được ai bảo lãnh`);
+							helpE.addFields(
+								{
+									name: "Ví dụ",
+									value: "```vcxem <@123>```"
+								}
+							)
+						}	
+						break;
+            case 'BAOLANH':
+						case 'BL':
+						{
+							helpE.setTitle(`BAOLANH <NGƯỜI BẢO LÃNH> <LỰA CHỌN (ADD/REMOVE)> <NGƯỜI ĐƯỢC BẢO LÃNH>`);
+							helpE.setDescription(`Dùng để thêm/xóa người bảo lãnh`);
+							helpE.addFields(
+								{
+									name: "Ví dụ",
+									value: "```vcbaolanh <@1234> add <@4567>``` ```vcbaolanh <@1234> remove <@4567>```"
+								}
+							)
+						}	
+						break;
+					}
+					message.channel.send(helpE);
+				}
+			}
+
+			else
+				switch(field[0])
+				{
+          case 'BJS': 
+					{
+            if(message.channel.id!='872090310698741830'&&message.author.id!='687301490238554160'&&message.channel.id!='872365091146838046')
+            return;
+						if(!message.member.roles.cache.find(r => r.id === '871439549832785990'))
+          {
+           
+            return;
+          }
+						let players = message.mentions.members.array();
+						if(players.includes(message.member)) 
+						{
+							await message.channel.send(`**Không cần mentions Nhà Cái!**`);
+							return;
+						}
+						if(players.length>9) 
+						{
+							await message.channel.send(`**Chỉ cho phép tối đa 9 người chơi!**`);
+							return;
+						}
+						players.push(message.member);
+						message.channel.send(`<a:VC_WumpusKeyboard:704307693976027217> **Chuẩn bị test game!**`);
+						for(let i of players)
+						{
+							try
+							{
+								await i.send(`<a:VC_verify15:752528586350526504> **Gửi tin nhắn DM thành công!**`);
+								//t++;
+							}
+							catch(error)
+							{
+								await message.channel.send(`<a:VC_dot:714535064788009083> **Không thể DM cho người chơi <@`+i+`>, xóa khỏi list tham gia!**`);
+								players.splice(players.indexOf(i),1);
+								//return;
+							}
+
+						}
+         //   console.log(players.length);
+						await message.channel.send(`<a:VC_k_:704210617405538314> **Test game thành công - Bắt đầu!**`);
+						//A - 1
+						//2 -> 10 10
+						//JQK - 10
+						//
+						let random=[1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10,1,2,3,4,5,6,7,8,9,10,10,10,10]
+						let jqk = [1,2,3,0,1,1,1,2,2,2,3,3,3,0,0,0];
+						let type = [];
+						for(let i=1; i<=4; i++)
+						{
+							for(let j=1; j<=13; j++)
+								type.push(i);
+						}
+            let jqk_id=0;
+            
+						//=)))))
+						random.sort( () => .5 - Math.random() );
+						jqk.sort( () => .5 - Math.random() );
+						type.sort( () => .5 - Math.random() );
+
+						//console.log(random[0]);
+						let NAME = ["","b","c","ch","r"];
+						let cards = {};
+            let amount={};
+
+						//let index=0;
+						for(let i of players)
+						{
+              amount[i.id]=2;
+							for(let j=1; j<=2; j++)
+							{
+                let index=players.indexOf(i)*5+j-1;
+             //   console.log(index);
+								let bai = random[index];
+								if(bai===10)
+								{
+									if(jqk[jqk_id]===0) bai=10;
+									if(jqk[jqk_id]===1) bai='J';
+									if(jqk[jqk_id]===2) bai='Q';
+									if(jqk[jqk_id]===3) bai='K';
+								}
+                jqk_id++;
+								console.log(bai+"_"+type[index]);
+								await i.send({
+									embed: {
+									  author: "Đã rút một lá!",
+									  color:i.displayColor,
+									  image: {
+										url: "attachment://"+bai+NAME[type[index]]+'.png'
+									  }
+									},
+									files: [{
+									  attachment: './vnccard/'+bai+NAME[type[index]]+'.png',
+									  name: bai+NAME[type[index]]+'.png'
+									}]
+								  });
+
+								if(!cards[i.id]) cards[i.id]=[];
+								cards[i.id].push(cardid[bai+"_"+type[index]] + "`" + (bai!='1'?bai:"A") +"`" );
+							}
+						}
+						let k=players.length-1;
+
+						for(let player of players)
+						{
+							let msg = await player.send(`<a:VC_star:752528894384669050> React vào 🃏 để rút thêm 1 lá, react vào ❌ để dừng`);
+							let soluong=3;
+							await msg.react('🃏');
+							await msg.react('❌');
+
+							const filter = (reaction, user) => (reaction.emoji.name === '🃏' || reaction.emoji.name === '❌') && user.id === player.id;
+
+							const collector = msg.createReactionCollector(filter, { time: (player.id===message.author.id?600000:45000) , max:3} );
+							collector.on('collect', r => 
+							{
+								if(r.emoji.name === '🃏')
+								{
+                  let index=players.indexOf(player)*5+amount[player.id];
+                  amount[player.id]++;
+                  console.log(index+" "+amount[player.id]);
+									let bai = random[index];
+									if(bai===10)
+									{
+										if(jqk[jqk_id]===0) bai=10;
+										if(jqk[jqk_id]===1) bai='J';
+										if(jqk[jqk_id]===2) bai='Q';
+										if(jqk[jqk_id]===3) bai='K';
+									}
+                  jqk_id++;
+									player.send({
+										embed: {
+										  author: "Đã rút một lá!",
+										  color:player.displayColor,
+										  image: {
+											url: "attachment://"+bai+NAME[type[index]]+'.png'
+										  }
+										},
+										files: [{
+										  attachment: './vnccard/'+bai+NAME[type[index]]+'.png',
+										  name: bai+NAME[type[index]]+'.png'
+										}]
+									});
+									cards[player.id].push(cardid[bai+"_"+type[index]] + "`" + (bai!='1'?bai:"A") +"`" );
+									index++;
+									soluong--;
+									if(soluong===0) 
+									{
+										collector.stop();
+									}
+								}
+								else if(r.emoji.name === '❌')
+								{
+									player.send(`<:VC_warning:704230656796000266> Dừng bài!`);
+									collector.stop();
+								}
+							});
+						}
+						let embed = new Discord.MessageEmbed();
+						embed.setAuthor(`Nhà cái: `+message.member.displayName);
+						embed.setColor(message.member.displayColor);
+
+						setTimeout(async function(){ 
+							await message.channel.send(`<a:VC_verify5:704210216434008074> Hoàn tất rút bài!`);
+							let s="";
+							for(let i=0; i<players.length-1; i++)
+							{
+								s+=String(i+1)+" <a:VC_muiten2:755471116914524230> <@"+players[i].id+"> - "+amount[players[i].id]+" lá\n";
+							}
+							await message.channel.send('<a:VC_tada_p:705995469607927828> **Lật bài**\n'+s);
+							const filter = m => (m.author.id === message.author.id && m.content.toLowerCase().startsWith('vlat'));
+							const collectora = message.channel.createMessageCollector(filter, {time: 300000 });
+							collectora.on('collect', async(m) => {
+								//let m = new Discord.Message();
+								let mention_member = m.mentions.members.first();
+								//tao dung random ma =DD
+								if(!players.includes(mention_member)&&!m.content.toUpperCase().includes('ALL'))
+								{
+									await message.channel.send(`<a:VC_tukk:704211752996306954> **Không có player đó trong game hoặc đã được lật!**`);
+								}
+								else 
+								{
+									if(m.content.toUpperCase().includes('ALL'))
+                  {
+                    embed.setTitle(`Lật bài của toàn bộ người chơi!`);							
+										embed.fields=[];
+										embed.addFields(
+											{
+												name:"Bài của Nhà cái",
+												value:cards[m.member.id]
+											}
+                    );
+                    for(let member of players)
+											if(member.id!=message.author.id)
+                      embed.addFields(
+                      {
+												name:"Bài của " + member.displayName,
+												value:cards[member.id]
+											}
+										)
+										await message.channel.send(embed);
+										collectora.stop();
+                  }
+                  else if (mention_member.id===message.author.id)
+									{
+										await message.channel.send(`<a:VC_tukk:704211752996306954> **Gì zậy, ngáo hả!**`);
+									}
+									else
+									{
+										embed.setTitle(`Lật bài của `+ mention_member.displayName);
+										players.splice(players.indexOf(mention_member),1);
+										embed.fields=[];
+										embed.addFields(
+											{
+												name:"Bài của Nhà cái",
+												value:cards[m.member.id]
+											},
+											{
+												name:"Bài của Nhà con",
+												value:cards[mention_member.id]
+											}
+										)
+										await message.channel.send(embed);
+										if(players.length===1) 
+										{
+											collectora.stop();
+										}
+									}
+								}
+							});
+							
+							collectora.on('end', () => {
+								message.channel.send(`<a:VC_saberpe:704307847348879420> **END GAME!**`);
+								//console.log(`END GAME!`);
+							});
+						
+						}, 45000);
+						//day toan gtri vao database
+					} 
+					break;
+				case 'PING':
+				{
+					message.channel.send(`**Ping Pong - ` + String(new Date().getTime() - message.createdTimestamp) + ` ms!**`);
+				} 
+				break;
+        case 'RD':
+				case 'RAND':
+				case 'RANDOM':
+				{
+          if(field.length>3)
+          {
+              message.channel.send('SAI CAU TRUC');
+              return ;
+          }
+          if(field.length===2)
+          {
+            if(!Number(field[1]))
+            {
+              message.channel.send('SAI CAU TRUC');
+              return ;
+            }
+          }
+          if(field.length===3)
+          {
+            if(!Number(field[1])||!Number(field[2]))
+            {
+              message.channel.send('SAI CAU TRUC');
+              return ;
+            }
+          }
+					let numberMIN = Number(field[1]);
+					let numberMAX = Number(field[2]);
+					if(!numberMIN)
+					{
+						numberMIN=1;
+						numberMAX=10;
+					}
+					if(!numberMAX)
+					{
+						numberMAX=numberMIN;
+						numberMIN=1;
+					}
+
+				//	message.reply("abc: "+numberMIN+" "+numberMAX);
+					random = Math.floor(Math.random() * (numberMAX - numberMIN+1 ) + numberMIN);
+					message.channel.send(`<a:xu:849455749494603786> **${random}**`);
+				} 
+				break;
+
+        case 'P':
+				case 'PICK':
+				{
+					let ls = msg.substr(process.env.PREFIX.length);
+					for(let i=0; i<ls.length; i++)
+					{
+						let now = ls[i]+ls[i+1]+ls[i+2]+ls[i+3];
+						if(now.toUpperCase()==='PICK') 
+						{
+							ls = ls.substr(i+4);
+							break;
+						}
+					}
+					let temp=" ";
+					let list = [];
+					ls+=',';
+					for(let i of ls)
+					{
+						if(i!=',') temp+=i;
+						else
+						{	
+							list.push(temp.trim());
+							temp=" ";
+						}
+					}
+
+					const item = list[Math.floor(Math.random() * list.length)];
+					if(item==="") item=" ";
+					message.channel.send(`Tôi chọn: **${item}**`);
+				}
+				break;
+        case 'GN':
+        case 'NOTE':
+				case 'GHINO': 
+				{
+          if(!message.member.roles.cache.find(r => r.id === '834272565789982730'))
+          {
+            message.channel.send(`Bạn không có quyền thực hiện lệnh này`);
+            return;
+          }
+					let nomem = message.mentions.users.array();
+					let ver = ['704210082719727667','713149889848279120','745238077739368509','706926331643953182','704210216434008074','704210124893323274','752528586350526504','752528816135733268','752528650955391177']
+					const item = ver[Math.floor(Math.random() * ver.length)];
+					let sotien = Number(field[2]);
+					if(!sotien) 
+					{
+						message.channel.send('Số tiền nhập vào phải là 1 số thuộc **ℤ**!');
+						return;
+					}
+					if(sotien>=0) 
+					{
+						message.channel.send('Số tiền nhập vào phải là 1 số âm!');
+						return;
+					}
+					if(!(nomem[0]&&nomem[1]))
+					{
+						message.channel.send('Thiếu người nợ hoặc chủ nợ!');
+						return;
+					}
+					sotien*=-1;
+					message.channel.send(`Ghi nợ: **${nomem[0].username}** nợ **${nomem[1].username}** **${sotien}** OwO?\nReact <a:v:${item}> để xác nhận (trong vòng 15s), react một emoji bất kỳ khác để hủy yêu cầu`).then(msg => {
+							msg.react(item);
+
+							const filter = (reaction, user) => (user.id === message.member.id);
+							const collector = msg.createReactionCollector(filter, { time: 15000 , max:1} );
+							collector.on('collect', r => 
+							{
+                  if(r.emoji.id===item)
+									{
+                    let id = msg.id;
+                    let struct ={};
+                    struct.conno=nomem[0].id;
+                    struct.chuno=nomem[1].id;
+                    struct.thucthi=message.member.id;
+                    struct.sotien=sotien;
+                 //   data[id] = {};
+                    data[id] = struct;
+                    db.set("data", data).then(() => {
+                      log("GHI NO",`- Con nợ: ${nomem[0].username}\n- Chủ nợ: ${nomem[1].username}\n- Số tiền: **${sotien}** OwO\n- Người thực thi: <@${message.member.id}>\nID: ${id}`).catch()
+                      {
+
+                      };
+                      let conno = message.guild.members.cache.get(nomem[0].id);
+                      conno.roles.add('803913879956619274');
+                      message.channel.send(`**Xác nhận ghi nợ:**\n- Con nợ: ${nomem[0].username}\n- Chủ nợ: ${nomem[1].username}\n- Số tiền: **${sotien}** OwO\n- Người thực thi: <@${message.member.id}>\nID: ${id}`);
+                    });
+                    return;
+                  }
+                  
+							})
+						});
+					//console.log(nomem[0],nomem[1]);
+				} 
+				break;
+        case 'LIST': 
+				{
+          embed= embedGen();
+          embed.setTitle('DANH SÁCH GHI NỢ');
+       //   console.log(data);
+          arr = Object.entries(data);
+          console.log(arr);
+          for(let i of arr)
+          {
+            if(i[0]===undefined||i[1]===undefined) continue;
+            embed.addFields(
+            {
+              name:`ID: ${i[0]}`,
+              value:`<@${i[1].thucthi}>: <@${i[1].conno}> nợ <@${i[1].chuno}> ${i[1].sotien} OwO`
+            })
+          }
+          message.channel.send(embed);
+          
+				} 
+				break;
+  	    case 'XN':
+        case 'XOANO': 
+				{
+          if(!message.member.roles.cache.find(r => r.id === '834272565789982730'))
+          {
+            message.channel.send(`Bạn không có quyền thực hiện lệnh này`);
+            return;
+          }
+          if(!data[field[1]]) 
+          {
+            message.channel.send('Không có ID đó trong list nợ!');
+            return;
+          }
+          let conno = message.guild.members.cache.get(data[field[1]].conno);
+          
+          if(conno.roles.cache.find(r => r.id === '803913879956619274'))
+            conno.roles.remove('803913879956619274');
+          log("XOA NO",`- Con nợ: <@${data[field[1]].conno}>\n- Chủ nợ: <@${data[field[1]].chuno}>\n- Số tiền: ${data[field[1]].sotien} OwO\n- Người thực thi lệnh xóa: <@${message.member.id}>`)//.catch(){
+
+          //};
+          data[field[1]]=undefined;
+          db.set("data", data).then(() => {
+            
+            message.channel.send('Đã xóa nợ thành công!');
+          });
+				} 
+				break;
+        case 'BL':
+        case 'BAOLANH': 
+				{
+					if(!message.member.roles.cache.find(r => r.id === '834272565789982730'))
+					{
+						message.channel.send(`Bạn không có quyền thực hiện lệnh này`);
+						return;
+					}
+
+					let nomem = message.mentions.users.array();
+					let ver = ['704210082719727667','713149889848279120','745238077739368509','706926331643953182','704210216434008074','704210124893323274','752528586350526504','752528816135733268','752528650955391177']
+					const item = ver[Math.floor(Math.random() * ver.length)];
+					if(!(nomem[0]&&nomem[1]))
+					{
+						message.channel.send('Thiếu người bảo lãnh hoặc người được bảo lãnh!');
+						return;
+					}
+          if(field[2]!='A'&&field[2]!='ADD'&&field[2]!='R'&&field[2]!='REMOVE')
+          {
+            message.channel.send('Chỉ có 2 option: ADD (A) hoặc REMOVE (R)');
+						return;
+          }
+          let yc=true;
+          if(field[2]==='A'||field[2]==='ADD') yc=false;
+          if(!gua[nomem[1].id])
+          {
+            gua[nomem[1].id]={};
+            gua[nomem[1].id].bl1="";
+      //      gua[nomem[1].id].bl2="";
+          }
+          if(yc)
+          {
+            if(gua[nomem[1].id].bl1!=nomem[0].id)//&&gua[nomem[1].id].bl2!=nomem[0].id)
+            {
+              message.channel.send(`<@${nomem[0].id}> chưa bảo lãnh cho <@${nomem[1].id}>`);
+						  return;
+            }
+          }
+          else
+          {
+            if(gua[nomem[1].id].bl1===nomem[0].id)//||gua[nomem[1].id].bl2===nomem[0].id)
+            {
+              message.channel.send(`<@${nomem[0].id}> đã bảo lãnh cho <@${nomem[1].id}> rồi!`);
+						  return;
+            }
+
+            if(gua[nomem[1].id].bl1!="")//&&gua[nomem[1].id].bl2!="")
+            {
+              message.channel.send('Member đã được bảo lãnh!!');
+						  return;
+            }
+          }
+					message.channel.send((yc?`Xóa `:``)+`Bảo Lãnh: **${nomem[0].username}** sẽ `+(yc?`không còn `:``)+`bảo lãnh **${nomem[1].username}**?\nReact <a:v:${item}> để xác nhận (trong vòng 15s), react một emoji bất kỳ khác để hủy yêu cầu`).then(msg => {
+							msg.react(item);
+
+							const filter = (reaction, user) => (user.id === message.member.id);
+							const collector = msg.createReactionCollector(filter, { time: 15000 , max:1} );
+							collector.on('collect', r => 
+							{
+                  if(r.emoji.id===item)
+									{
+                    if(yc)
+                    {
+                      if(gua[nomem[1].id].bl1===nomem[0].id)
+                      {
+                        gua[nomem[1].id].bl1="";
+                      }
+                 /*     else if(gua[nomem[1].id].bl2===nomem[0].id)
+                      {
+                        gua[nomem[1].id].bl2="";
+                      }*/
+                      
+                      db.set("gua", gua).then(() => {
+                      log("HUY BAO LANH",`- Người từng bảo lãnh: <@${nomem[0].id}>\n- Người đã được bảo lãnh: <@${nomem[1].id}>\n- Người thực thi: <@${message.member.id}>`).catch()
+                      {
+                      };
+                      message.channel.send(`**Xác nhận hủy bảo lãnh:**\n- Người từng bảo lãnh: ${nomem[0].username}\n- Người từng được bảo lãnh: ${nomem[1].username}\n- Người thực thi: <@${message.member.id}>`);
+                      });
+                      return;
+                    }
+                    else
+                    {
+                      if(gua[nomem[1].id].bl1==="")
+                      {
+                        gua[nomem[1].id].bl1=nomem[0].id;
+                      }
+                    /*  else if(gua[nomem[1].id].bl2==="")
+                      {
+                        gua[nomem[1].id].bl2=nomem[0].id;
+                      }*/
+                      
+                      db.set("gua", gua).then(() => {
+                      log("BAO LANH",`- Người bảo lãnh: <@${nomem[0].id}>\n- Người được bảo lãnh: <@${nomem[1].id}>\n- Người thực thi: <@${message.member.id}>`).catch()
+                      {
+                      };
+                      message.channel.send(`**Xác nhận bảo lãnh:**\n- Người bảo lãnh: ${nomem[0].username}\n- Người được bảo lãnh: ${nomem[1].username}\n- Người thực thi: <@${message.member.id}>`);
+                      });
+                      return;
+                    }
+                  }
+              }) 
+							})
+              
+
+              
+						}
+            break;
+            case 'XEM':
+            case 'X': 
+            {
+              let nomem = message.mentions.users.array()[0];
+              if(!nomem)
+              {
+                  message.channel.send(`Chưa mention!`)
+                  return ;
+              }
+              if(!gua[nomem.id]||(gua[nomem.id]&&gua[nomem.id].bl1===""))//&&gua[nomem.id].bl2===""))
+              {
+                message.channel.send(`Chưa ai bảo lãnh cho member này!`)
+                return ;
+              }
+              s=`<@${nomem.id}> được bảo lãnh bởi: `;
+              if(gua[nomem.id].bl1!="")
+              {
+                s+=`<@${gua[nomem.id].bl1}>`;
+              }
+           /*   if(gua[nomem.id].bl2!="")
+              {
+                s+=` <@${gua[nomem.id].bl2}>`;
+              }*/
+              message.channel.send(s)
+            } 
+            break;
+            case 'GAM': 
+            {
+              if(!message.member.roles.cache.find(r => r.id === '834272565789982730'))
+					    {
+						    message.channel.send(`Bạn không có quyền thực hiện lệnh này`);
+						    return;
+					    }
+
+              let nomem = message.mentions.users.array()[0];
+              if(!nomem)
+              {
+                  message.channel.send(`Chưa mention!`)
+                  return ;
+              }
+              let conno = message.guild.members.cache.get(nomem.id);
+          
+              if(!conno.roles.cache.find(r => r.id === '841744416317374514'))
+                conno.roles.add('841744416317374514');
+              message.channel.send('ADD ROLE THANH CONG!');
+            } 
+            break;
+            case 'GA': 
+            {
+              if(message.author.id!='687301490238554160'&&!message.member.roles.cache.find(r => r.id === '699032560134783056'))
+					    {
+						    message.channel.send(`Bạn không có quyền thực hiện lệnh này`);
+						    return;
+					    }
+              let embed = new Discord.MessageEmbed();
+              embed.setColor('#ff0000');
+              embed.setAuthor("Thực Thi Thất Bại!");
+              let time = normal[1];
+              if(!Number(time.substring(0,time.length-1)))
+              {
+                  embed.setDescription(`Thời gian nhập vào sai cấu trúc!`);
+                  message.channel.send(embed);
+                  return;
+              }
+              let sec,timeVis;
+              if(time[time.length-1]==='m') sec=60,timeVis="phút";
+              else if(time[time.length-1]==='s') sec=1,timeVis="giây";
+              else
+              {
+                  embed.setDescription("Chỉ chấp nhập `s` `m`");
+                  message.channel.send(embed);
+                  return;
+              }
+              timeVis = time.substring(0,time.length-1) + " " + timeVis; 
+              sec*=Number(time.substring(0,time.length-1));
+              //console.log(sec);
+              if(sec<1||sec>300)
+              {
+                  embed.setDescription(`Thời gian phải lớn hơn hoặc bằng 1 giây và bé hơn 5 phút!`);
+                  message.channel.send(embed);
+                  return;
+              }
+
+              let winner = Number(normal[2]);
+              if(!winner)
+              {
+                  embed.setDescription(`Số lượng winner phải là một số nguyên!`);
+                  message.channel.send(embed);
+                  return;
+              }
+
+              let prize="";
+              for(let i=3; i<normal.length; i++)
+                  prize+=normal[i]+" ";
+              if(prize.length>=256)
+              {
+                  embed.setDescription(`Phần thưởng nhập vào phải có độ dài nhỏ hơn 256 kí tự!`);
+                  message.channel.send(embed);
+                  return;
+              }
+              embed.setThumbnail("");
+              embed.setAuthor(prize);
+              embed.setDescription(`React 🎲  để tham gia!\nThời gian: **${timeVis}**\nTổ chức bởi: <@${message.author.id}>\n${winner} người trúng giải`);
+              embed.setFooter(`Kết thúc vào lúc`);
+              embed.setTimestamp(message.createdTimestamp+sec*1000);
+              
+              let msg = await message.channel.send(`🎮   **GIVEAWAY**   🎮`, {embed});
+              message.delete();
+              await msg.react('🎲');
+              const ga_finished = `🎮   **GIVEAWAY FINISHED**   🎮`;
+              setTimeout(async () => 
+              {
+                if(msg.deleted) 
+                {
+                  return;
+                }
+                let list;
+                await msg.reactions.resolve('🎲').users.fetch().then(userList => list = userList);
+                let all = [];
+                await list.find(user => {if(!user.bot) all.push(user.id)});
+                let wE = new Discord.MessageEmbed();
+                wE.setDescription(`**[⇧ Lướt lên ⇧](${msg.url})**`);
+                all.sort(() => Math.random() -0.5);
+                let embed = msg.embeds[0];
+                let whattosay=``;
+                if(prize!='') whattosay=`**${prize}**`;
+                if(all.length<winner)
+                {
+                    await msg.channel.send(`Người tham gia giveaway ${whattosay} tổ chức bởi **<@${message.author.id}>** không đủ nên không có ai thắng :Đ!`,wE);
+                    if(embed)
+                    {
+                        embed.setDescription(`Không thể tìm ra ${winner} người trúng giải\nTổ chức bởi: <@${message.author.id}>`)
+                        embed.setColor('#ff9900')
+                        await msg.edit(ga_finished,{embed});
+                    }
+                    else await msg.edit(ga_finished);
+                    return;
+                }
+                let win=[];
+                for(let i=0; i<winner; i++)
+                    win.push("<@"+all[i]+">");
+                    
+                win = win.join(", ");
+                    
+                msg.channel.send(`Chúc mừng ${win}, bạn đã thắng giveaway ${whattosay} tổ chức bởi **<@${message.author.id}>**!`,wE)
+                
+                if(embed)
+                {
+                    embed.setDescription(`Trúng giải: ${win}\nTổ chức bởi: <@${message.author.id}>`)
+                    embed.setColor('#ff9900');
+                    msg.edit(ga_finished,{embed});
+                }
+                else msg.edit(ga_finished);
+
+                return;
+              },sec*1000);
+            } 
+            break;
+        }
+					//console.log(nomem[0],nomem[1]);
+				
+});
+
+bot.login(process.env.TOKEN);
