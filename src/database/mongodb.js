@@ -62,3 +62,8 @@ const { registerCustomRandom, findCustomRandom, updateCustomRandom } = require('
 module.exports.registerCustomRandom = registerCustomRandom;
 module.exports.findCustomRandom = findCustomRandom;
 module.exports.updateCustomRandom = updateCustomRandom;
+/* disableCommand */
+const { checkDisableCommand, createDisableCommand, deleteDisableCommand } = require('./query/disableCommand');
+module.exports.checkDisableCommand = checkDisableCommand;
+module.exports.createDisableCommand = createDisableCommand;
+module.exports.deleteDisableCommand = deleteDisableCommand;
