@@ -62,3 +62,12 @@ const { registerCustomRandom, findCustomRandom, updateCustomRandom } = require('
 module.exports.registerCustomRandom = registerCustomRandom;
 module.exports.findCustomRandom = findCustomRandom;
 module.exports.updateCustomRandom = updateCustomRandom;
+/* christmas2022piece */
+const { getChristmasByDiscord, increaseChristmasCount, updateChristmasPiece } = require('./query/christmas2022piece');
+module.exports.getChristmasByDiscord = getChristmasByDiscord;
+module.exports.increaseChristmasCount = increaseChristmasCount;
+module.exports.updateChristmasPiece = updateChristmasPiece;
+/* VoiceInfo */
+const { getVoiceInfoByDiscord, increaseTotalTime } = require('./query/voiceInfo');
+module.exports.getVoiceInfoByDiscord = getVoiceInfoByDiscord;
+module.exports.increaseTotalTime = increaseTotalTime;
