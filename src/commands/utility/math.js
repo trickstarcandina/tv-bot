@@ -23,12 +23,24 @@ class UserCommand extends WynnCommand {
 	async messageRun(message, args) {
 		const t = await fetchT(message);
 		try {
-			let stringExpression = await args.pick('string').catch(() => null);
+			let input = args.message.content.split(' ');
+			let stringExpression = '';
+			for (let index = 1; index < input.length; index++) {
+				stringExpression = stringExpression + input[index].trim();
+			}
 			stringExpression = stringExpression.replace(/\s+/g, '');
-			return await utils.returnSlashAndMessage(
-				message,
-				t('commands/math:result', { user: message.author.tag, res: evaluate(stringExpression) })
-			);
+			try {
+				const re = /(?:(?:^|[-+_*/])(?:\s*-?\d+(\.\d+)?(?:[eE][+-]?\d+)?\s*))+$/;
+				if (re.test(stringExpression)) {
+					return await utils.returnSlashAndMessage(
+						message,
+						t('commands/math:result', { user: message.author.tag, res: evaluate(stringExpression) })
+					);
+				}
+				return await utils.returnSlashAndMessage(message, t('commands/math:input_error'));
+			} catch (err) {
+				return await utils.returnSlashAndMessage(message, t('commands/math:input_error'));
+			}
 		} catch (err) {
 			logger.error(err);
 			return await send(message, t('other:error', { supportServer: process.env.SUPPORT_SERVER_LINK }));

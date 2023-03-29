@@ -2,5 +2,6 @@
 	"usage": "{{prefix}}math 1+1",
 	"example": ["{{prefix}}math 1+1"],
 	"description": "Math math match :3",
-    "result": "**{{user}}** {{res}}"
+    "result": "**{{user}}** {{res}}",
+	"input_error": "Input error"
 }
